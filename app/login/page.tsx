@@ -23,37 +23,48 @@ export default function AdminLoginPage() {
         try {
             const supabase = createClient()
 
+            // Normalize email
+            const normalizedEmail = email.toLowerCase().trim()
+
             // Sign in with Supabase Auth
             const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-                email,
+                email: normalizedEmail,
                 password,
             })
 
             if (authError) {
+                console.error('Auth error:', authError)
                 setError('Email atau password salah')
                 setIsLoading(false)
                 return
             }
 
+            console.log('Auth successful for:', authData.user?.email)
+
             // Check if user is admin
             const { data: adminData, error: adminError } = await supabase
                 .from('admin_users')
-                .select('id')
-                .eq('email', email)
+                .select('id, email')
+                .eq('email', normalizedEmail)
                 .single()
 
+            console.log('Admin check result:', { adminData, adminError })
+
             if (adminError || !adminData) {
+                console.error('Not an admin:', normalizedEmail)
                 // Sign out if not admin
                 await supabase.auth.signOut()
-                setError('Anda tidak memiliki akses admin')
+                setError(`Anda tidak memiliki akses admin. Email: ${normalizedEmail}`)
                 setIsLoading(false)
                 return
             }
 
+            console.log('Login successful! Redirecting...')
             // Redirect to admin dashboard
             router.push('/admin')
             router.refresh()
         } catch (err) {
+            console.error('Unexpected error:', err)
             setError('Terjadi kesalahan. Silakan coba lagi.')
             setIsLoading(false)
         }
