@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PPDB SMP Terpadu Al-Ittihadiyah
 
-## Getting Started
+Sistem Penerimaan Peserta Didik Baru (PPDB) Online untuk SMP Terpadu Al-Ittihadiyah.
 
-First, run the development server:
+## 🚀 Quick Start
+
+### 1. Setup Supabase
+
+1. Buat project di [Supabase](https://supabase.com)
+2. Copy file ENV_SETUP.md dan isi kredensial Supabase Anda
+3. Jalankan SQL schema di Supabase SQL Editor:
+   - Buka `supabase/migrations/001_initial_schema.sql`
+   - Copy seluruh isinya
+   - Paste dan jalankan di Supabase SQL Editor
+
+4. Buat Storage Bucket:
+   ```sql
+   -- Jalankan ini di Supabase SQL Editor
+   INSERT INTO storage.buckets (id, name, public) 
+   VALUES ('documents', 'documents', false);
+   ```
+
+5. Buat Admin User (opsional untuk testing):
+   ```sql
+   -- Buat user admin di Supabase Auth terlebih dahulu via dashboard
+   -- Kemudian insert email admin ke tabel admin_users
+   INSERT INTO admin_users (email) VALUES ('admin@example.com');
+   ```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Environment Variables
+
+Buat file `.env.local` di root folder:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Struktur Project
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/                      # Next.js App Router
+│   ├── api/                 # API routes
+│   │   ├── register/        # Endpoint pendaftaran
+│   │   ├── upload/          # Endpoint upload file
+│   ├── daftar/              # Halaman pendaftaran
+│   ├── layout.tsx           # Root layout
+│   └── page.tsx             # Landing page
+├── components/              # React components
+│   ├── landing/            # Landing page sections
+│   ├── registration/       # Form pendaftaran
+│   └── ui/                 # UI components
+├── lib/                     # Utilities & helpers
+│   ├── supabase/           # Supabase clients
+│   ├── validations/        # Form & file validations
+│   └── utils.ts            # Helper functions
+├── types/                   # TypeScript types
+└── supabase/               # Database migrations
+    └── migrations/
+        └── 001_initial_schema.sql
+```
 
-## Learn More
+## 🎯 Fitur
 
-To learn more about Next.js, take a look at the following resources:
+✅ **Landing Page**
+- Hero dengan CTA
+- Profil sekolah
+- Visi & Misi
+- Keunggulan
+- Alur PPDB
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✅ **Formulir Pendaftaran Multi-Step**
+- Step 1: Data Siswa
+- Step 2: Data Orang Tua
+- Step 3: Upload Dokumen
+- Validasi real-time
+- Progress indicator
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+✅ **Upload Dokumen**
+- Drag & drop interface
+- Format JPG/JPEG only
+- Validasi ukuran & resolusi
+- Preview gambar
+- Error handling lengkap
 
-## Deploy on Vercel
+✅ **Konfirmasi Pendaftaran**
+- Nomor pendaftaran otomatis
+- Ringkasan data
+- Status tracking
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+✅ **Security**
+- Row Level Security (RLS)
+- Validasi client & server side
+- Safe file upload
+- SQL injection protection
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔐 Keamanan
+
+1. **Row Level Security (RLS)**: Database hanya bisa diakses sesuai permission
+2. **Validasi Ganda**: Client-side & server-side validation
+3. **Safe File Handling**: Type checking, size limits, resolution validation
+4. **No Direct File URL**: Files disimpan di private bucket
+
+## 📝 Validasi File
+
+Dokumen yang di-upload harus memenuhi:
+- ✓ Format: JPG atau JPEG (tidak menerima PNG, PDF)
+- ✓ Ukuran max: 2MB
+- ✓ Resolusi minimal: 800px width
+- ✓ Gambar harus jelas dan terbaca
+
+## 🚀 Deployment ke Vercel
+
+1. Push code ke GitHub
+2. Connect repository ke Vercel
+3. Tambahkan Environment Variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Deploy!
+
+## 📊 Database Schema
+
+### Tables:
+- `registrations` - Data pendaftaran utama
+- `students` - Data siswa
+- `parents` - Data orang tua
+- `documents` - Metadata dokumen upload
+- `admin_users` - Data admin
+
+Lihat detail di `supabase/migrations/001_initial_schema.sql`
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: TailwindCSS
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Supabase Storage
+- **Validation**: Zod
+- **Icons**: Lucide React
+
+## 📞 Support
+
+Untuk bantuan teknis, hubungi developer atau buka issue di repository.
+
+---
+
+Made with ❤️ for SMP Terpadu Al-Ittihadiyah
