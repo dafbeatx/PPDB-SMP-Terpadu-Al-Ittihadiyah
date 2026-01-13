@@ -8,7 +8,7 @@ import {
     FileText,
     Users,
     LogOut,
-    GraduationCap,
+    Home,
     Menu,
     X
 } from 'lucide-react'
@@ -70,11 +70,12 @@ export default function AdminSidebar() {
         transition-transform duration-300 z-40
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
+                {/* Back to Home Link */}
                 <div className="p-6 border-b border-gray-800">
-                    <Link href="/" className="flex items-center gap-3">
-                        <GraduationCap className="w-8 h-8" />
+                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Home className="w-8 h-8" />
                         <div>
-                            <div className="font-bold text-lg">Admin Panel</div>
+                            <div className="font-bold text-lg">← Balik ke Beranda</div>
                             <div className="text-sm text-gray-400">PPDB 2026/2027</div>
                         </div>
                     </Link>

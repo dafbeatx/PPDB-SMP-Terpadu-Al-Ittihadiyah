@@ -20,11 +20,13 @@ export async function GET(request: Request) {
         const { data, error } = await query
 
         if (error) {
+            console.error('GET error:', error)
             return NextResponse.json({ error: error.message }, { status: 500 })
         }
 
         return NextResponse.json({ content: data })
     } catch (error) {
+        console.error('GET error:', error)
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
@@ -40,43 +42,59 @@ export async function PUT(request: Request) {
         const supabase = await createClient()
 
         // Get current user
-        const { data: { user } } = await supabase.auth.getUser()
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-        if (!user) {
+        if (userError || !user) {
+            console.error('Auth error:', userError)
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        // Get admin ID
-        const { data: adminData } = await supabase
+        // Check admin status
+        const { data: adminData, error: adminError } = await supabase
             .from('admin_users')
-            .select('id')
+            .select('id, email')
             .eq('email', user.email)
             .single()
 
-        if (!adminData) {
+        if (adminError || !adminData) {
+            console.error('Admin check error:', adminError)
             return NextResponse.json({ error: 'Not an admin' }, { status: 403 })
         }
 
-        // Update each content item
-        const updates = content.map((item) =>
-            supabase
+        // Update each content item individually with error checking
+        const results = []
+        for (const item of content) {
+            const { data, error } = await supabase
                 .from('page_contents')
                 .update({
                     value: item.value,
                     updated_at: new Date().toISOString(),
-                    updated_by: adminData.id,
                 })
                 .eq('id', item.id)
-        )
+                .select()
 
-        await Promise.all(updates)
+            if (error) {
+                console.error(`Error updating item ${item.id}:`, error)
+                results.push({ id: item.id, success: false, error: error.message })
+            } else {
+                results.push({ id: item.id, success: true })
+            }
+        }
 
-        // Revalidate the homepage
-        // Note: In production, you might want to use Next.js revalidatePath
+        // Check if any failed
+        const failed = results.filter(r => !r.success)
+        if (failed.length > 0) {
+            console.error('Some updates failed:', failed)
+            return NextResponse.json({
+                success: false,
+                message: 'Some content items failed to update',
+                results
+            }, { status: 500 })
+        }
 
-        return NextResponse.json({ success: true })
+        return NextResponse.json({ success: true, results })
     } catch (error) {
-        console.error('Error updating content:', error)
+        console.error('Unexpected error:', error)
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
