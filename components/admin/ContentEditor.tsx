@@ -26,6 +26,7 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
     const [content, setContent] = useState<PageContent[]>(initialContent)
     const [isSaving, setIsSaving] = useState(false)
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const currentContent = content.filter((c) => c.category === activeTab)
 
@@ -41,6 +42,12 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
     const handleSave = async () => {
         setIsSaving(true)
         setSaveStatus('idle')
+        setErrorMessage('')
+
+        console.log('🔵 Starting save...', {
+            totalItems: content.length,
+            content: content.slice(0, 3), // Log first 3 items for debugging
+        })
 
         try {
             const response = await fetch('/api/admin/content', {
@@ -49,15 +56,31 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                 body: JSON.stringify({ content }),
             })
 
+            console.log('🔵 Response status:', response.status)
+
+            const data = await response.json()
+            console.log('🔵 Response data:', data)
+
             if (!response.ok) {
-                throw new Error('Failed to save')
+                throw new Error(data.error || `HTTP ${response.status}: Failed to save`)
             }
 
+            if (!data.success) {
+                throw new Error(data.message || 'Save failed')
+            }
+
+            console.log('✅ Save successful!')
             setSaveStatus('success')
-            setTimeout(() => setSaveStatus('idle'), 3000)
-        } catch (error) {
-            console.error('Error saving content:', error)
+
+            // Refresh page after 2 seconds to show updated content
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000)
+
+        } catch (error: any) {
+            console.error('❌ Error saving content:', error)
             setSaveStatus('error')
+            setErrorMessage(error.message || 'Unknown error')
         } finally {
             setIsSaving(false)
         }
@@ -101,6 +124,12 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
             {/* Content Form */}
             <Card className="p-6">
                 <div className="space-y-6">
+                    {currentContent.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                            Tidak ada konten untuk kategori ini
+                        </div>
+                    )}
+
                     {currentContent.map((item) => (
                         <div key={item.id}>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -112,21 +141,21 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                                     value={item.value}
                                     onChange={(e) => handleChange(item.id, e.target.value)}
                                     rows={4}
-                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900 resize-none"
+                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900 font-medium resize-none"
                                 />
                             ) : item.value_type === 'number' ? (
                                 <input
                                     type="number"
                                     value={item.value}
                                     onChange={(e) => handleChange(item.id, e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900"
+                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900 font-medium"
                                 />
                             ) : (
                                 <input
                                     type="text"
                                     value={item.value}
                                     onChange={(e) => handleChange(item.id, e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900"
+                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900 font-medium"
                                 />
                             )}
                         </div>
@@ -134,7 +163,7 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                 </div>
 
                 {/* Save Button */}
-                <div className="mt-8 flex items-center gap-4">
+                <div className="mt-8 flex flex-col gap-4">
                     <Button
                         onClick={handleSave}
                         disabled={isSaving}
@@ -146,16 +175,22 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                     </Button>
 
                     {saveStatus === 'success' && (
-                        <div className="flex items-center gap-2 text-green-600">
+                        <div className="flex items-center gap-2 text-green-600 bg-green-50 p-4 rounded-lg">
                             <CheckCircle className="w-5 h-5" />
-                            <span className="font-medium">Berhasil disimpan!</span>
+                            <span className="font-medium">Berhasil disimpan! Halaman akan di-refresh...</span>
                         </div>
                     )}
 
                     {saveStatus === 'error' && (
-                        <div className="flex items-center gap-2 text-red-600">
-                            <AlertCircle className="w-5 h-5" />
-                            <span className="font-medium">Gagal menyimpan. Coba lagi.</span>
+                        <div className="flex flex-col gap-2 text-red-600 bg-red-50 p-4 rounded-lg">
+                            <div className="flex items-center gap-2">
+                                <AlertCircle className="w-5 h-5" />
+                                <span className="font-medium">Gagal menyimpan</span>
+                            </div>
+                            {errorMessage && (
+                                <span className="text-sm">{errorMessage}</span>
+                            )}
+                            <span className="text-sm">Coba lagi atau refresh halaman</span>
                         </div>
                     )}
                 </div>
@@ -169,6 +204,7 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                     <li>• Pastikan teks yang diinput jelas dan mudah dipahami</li>
                     <li>• Gunakan Bahasa Indonesia yang formal dan profesional</li>
                     {activeTab === 'branding' && <li>• Logo akan otomatis tersimpan saat upload berhasil</li>}
+                    <li>• Jika gagal save, buka Console (F12) dan screenshot errornya</li>
                 </ul>
             </div>
         </div>
