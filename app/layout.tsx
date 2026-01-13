@@ -31,12 +31,20 @@ export default function RootLayout({
                 </div>
               </Link>
 
-              <Link
-                href="/daftar"
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-              >
-                Daftar Sekarang
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/admin/login"
+                  className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-sm md:text-base"
+                >
+                  Login Admin
+                </Link>
+                <Link
+                  href="/daftar"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-sm md:text-base"
+                >
+                  Daftar Sekarang
+                </Link>
+              </div>
             </div>
           </div>
         </nav>

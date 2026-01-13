@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import LogoUploader from './LogoUploader'
 import { Save, AlertCircle, CheckCircle } from 'lucide-react'
 import type { PageContent } from '@/types/content.types'
 
@@ -11,6 +12,7 @@ interface ContentEditorProps {
 }
 
 const categories = [
+    { id: 'branding', label: 'Logo & Branding' },
     { id: 'hero', label: 'Hero Section' },
     { id: 'profile', label: 'Profil Sekolah' },
     { id: 'visi_misi', label: 'Visi & Misi' },
@@ -20,7 +22,7 @@ const categories = [
 ]
 
 export default function ContentEditor({ initialContent }: ContentEditorProps) {
-    const [activeTab, setActiveTab] = useState('hero')
+    const [activeTab, setActiveTab] = useState('branding')
     const [content, setContent] = useState<PageContent[]>(initialContent)
     const [isSaving, setIsSaving] = useState(false)
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -80,6 +82,21 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                     ))}
                 </div>
             </div>
+
+            {/* Logo Uploader for Branding Tab */}
+            {activeTab === 'branding' && (
+                <div className="mb-6">
+                    <LogoUploader
+                        currentLogoUrl={content.find(c => c.key === 'logo_url')?.value || ''}
+                        onUploadSuccess={(url) => {
+                            const logoItem = content.find(c => c.key === 'logo_url')
+                            if (logoItem) {
+                                handleChange(logoItem.id, url)
+                            }
+                        }}
+                    />
+                </div>
+            )}
 
             {/* Content Form */}
             <Card className="p-6">
@@ -151,6 +168,7 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                     <li>• Perubahan akan langsung terlihat di website setelah disimpan</li>
                     <li>• Pastikan teks yang diinput jelas dan mudah dipahami</li>
                     <li>• Gunakan Bahasa Indonesia yang formal dan profesional</li>
+                    {activeTab === 'branding' && <li>• Logo akan otomatis tersimpan saat upload berhasil</li>}
                 </ul>
             </div>
         </div>
