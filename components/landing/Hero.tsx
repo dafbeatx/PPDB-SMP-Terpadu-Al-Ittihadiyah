@@ -1,8 +1,18 @@
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { GraduationCap } from 'lucide-react'
+import { getContentMap } from '@/lib/content'
 
-export default function Hero() {
+export default async function Hero() {
+    const content = await getContentMap('hero')
+
+    const schoolName = content.school_name || 'SMP Terpadu Al-Ittihadiyah'
+    const tagline = content.tagline || 'Pendaftaran Peserta Didik Baru (PPDB)'
+    const year = content.year || 'Tahun Ajaran 2026/2027'
+    const statExperience = content.stat_experience || '20'
+    const statGraduate = content.stat_graduate || '95'
+    const statAccreditation = content.stat_accreditation || 'A'
+
     return (
         <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white py-20 md:py-32">
             <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10"></div>
@@ -16,15 +26,15 @@ export default function Hero() {
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-                        SMP Terpadu<br />Al-Ittihadiyah
+                        {schoolName}
                     </h1>
 
                     <p className="text-xl md:text-2xl mb-4 text-green-50">
-                        Pendaftaran Peserta Didik Baru (PPDB)
+                        {tagline}
                     </p>
 
                     <p className="text-lg md:text-xl mb-10 text-white/90 max-w-2xl mx-auto">
-                        Tahun Ajaran 2026/2027
+                        {year}
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -42,15 +52,15 @@ export default function Hero() {
 
                     <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                            <div className="text-3xl font-bold mb-2">20+</div>
+                            <div className="text-3xl font-bold mb-2">{statExperience}+</div>
                             <div className="text-white/90">Tahun Berpengalaman</div>
                         </div>
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                            <div className="text-3xl font-bold mb-2">95%</div>
+                            <div className="text-3xl font-bold mb-2">{statGraduate}%</div>
                             <div className="text-white/90">Lulusan Melanjutkan ke SMA</div>
                         </div>
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                            <div className="text-3xl font-bold mb-2">A</div>
+                            <div className="text-3xl font-bold mb-2">{statAccreditation}</div>
                             <div className="text-white/90">Akreditasi Sekolah</div>
                         </div>
                     </div>
