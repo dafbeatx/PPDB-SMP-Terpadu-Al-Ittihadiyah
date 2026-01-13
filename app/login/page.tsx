@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Card from '@/components/ui/Card'
-import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { Lock, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -72,15 +71,15 @@ export default function AdminLoginPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md p-8">
+            <Card className="w-full max-w-md p-6 md:p-8">
                 <div className="text-center mb-8">
                     <div className="bg-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Lock className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                         Admin Panel
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm md:text-base">
                         SMP Terpadu Al-Ittihadiyah
                     </p>
                 </div>
@@ -102,7 +101,7 @@ export default function AdminLoginPage() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                className="w-full pl-11 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-gray-900 font-medium text-base placeholder:text-gray-400"
                                 placeholder="admin@example.com"
                                 required
                             />
@@ -119,7 +118,7 @@ export default function AdminLoginPage() {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                className="w-full pl-11 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-gray-900 font-medium text-base placeholder:text-gray-400"
                                 placeholder="••••••••"
                                 required
                             />
