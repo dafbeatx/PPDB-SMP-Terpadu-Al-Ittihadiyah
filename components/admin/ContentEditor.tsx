@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import LogoUploader from './LogoUploader'
 import { Save, AlertCircle, CheckCircle } from 'lucide-react'
 import type { PageContent } from '@/types/content.types'
 
@@ -96,8 +95,8 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                             key={cat.id}
                             onClick={() => setActiveTab(cat.id)}
                             className={`px-6 py-4 font-semibold text-sm transition-colors whitespace-nowrap ${activeTab === cat.id
-                                    ? 'text-green-600 border-b-2 border-green-600'
-                                    : 'text-gray-600 hover:text-gray-900'
+                                ? 'text-green-600 border-b-2 border-green-600'
+                                : 'text-gray-600 hover:text-gray-900'
                                 }`}
                         >
                             {cat.label}
@@ -106,20 +105,7 @@ export default function ContentEditor({ initialContent }: ContentEditorProps) {
                 </div>
             </div>
 
-            {/* Logo Uploader for Branding Tab */}
-            {activeTab === 'branding' && (
-                <div className="mb-6">
-                    <LogoUploader
-                        currentLogoUrl={content.find(c => c.key === 'logo_url')?.value || ''}
-                        onUploadSuccess={(url) => {
-                            const logoItem = content.find(c => c.key === 'logo_url')
-                            if (logoItem) {
-                                handleChange(logoItem.id, url)
-                            }
-                        }}
-                    />
-                </div>
-            )}
+            {/* Logo is now static at /logo.png */}
 
             {/* Content Form */}
             <Card className="p-6">

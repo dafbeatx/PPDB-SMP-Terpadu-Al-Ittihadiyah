@@ -34,7 +34,11 @@ export default function RootLayout({
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16 md:h-20">
               <Link href="/" className="flex items-center gap-2 md:gap-3">
-                <GraduationCap className="w-7 h-7 md:w-8 md:h-8 text-green-600 flex-shrink-0" />
+                <img
+                  src="/logo.png"
+                  alt="Logo SMP Al-Ittihadiyah"
+                  className="w-12 h-12 md:w-14 md:h-14 object-contain flex-shrink-0"
+                />
                 <div className="hidden sm:block">
                   <div className="font-bold text-sm md:text-lg text-gray-900">SMP Terpadu Al-Ittihadiyah</div>
                   <div className="text-xs md:text-sm text-gray-600">PPDB 2026/2027</div>
