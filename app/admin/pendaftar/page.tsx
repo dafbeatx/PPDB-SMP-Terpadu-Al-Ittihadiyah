@@ -9,12 +9,16 @@ import { FileDown, Search, Eye, Trash2, Users, CheckCircle, XCircle, Clock } fro
 interface Registration {
     id: string
     registration_number: string
-    full_name: string
-    nisn: string
-    email: string
-    phone: string
     status: string
     created_at: string
+    students?: {
+        full_name: string
+        nisn: string
+        phone_number: string
+    }[]
+    // Flattened fields for UI
+    full_name?: string
+    nisn?: string
 }
 
 export default function PendaftarPage() {
@@ -32,11 +36,26 @@ export default function PendaftarPage() {
             const supabase = createClient()
             const { data, error } = await supabase
                 .from('registrations')
-                .select('*')
+                .select(`
+                    *,
+                    students (
+                        full_name,
+                        nisn,
+                        phone_number
+                    )
+                `)
                 .order('created_at', { ascending: false })
 
             if (error) throw error
-            setRegistrations(data || [])
+
+            // Flatten data for easier use
+            const flattened = (data || []).map(reg => ({
+                ...reg,
+                full_name: reg.students?.[0]?.full_name || 'Tanpa Nama',
+                nisn: reg.students?.[0]?.nisn || '-'
+            }))
+
+            setRegistrations(flattened)
         } catch (error) {
             console.error('Error fetching registrations:', error)
         } finally {
@@ -63,11 +82,15 @@ export default function PendaftarPage() {
     }
 
     const filteredRegistrations = registrations.filter(reg => {
+        const search = searchTerm.toLowerCase()
+        const fullName = (reg.full_name || '').toLowerCase()
+        const regNum = (reg.registration_number || '').toLowerCase()
+        const nisn = (reg.nisn || '')
+
         const matchesSearch =
-            reg.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            reg.registration_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            reg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            reg.nisn.includes(searchTerm)
+            fullName.includes(search) ||
+            regNum.includes(search) ||
+            nisn.includes(search)
 
         const matchesStatus = filterStatus === 'all' || reg.status === filterStatus
 
@@ -214,7 +237,6 @@ export default function PendaftarPage() {
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">No. Pendaftaran</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Nama Lengkap</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base hidden lg:table-cell">NISN</th>
-                                <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base hidden lg:table-cell">Email</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Status</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Tanggal</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Aksi</th>
@@ -242,9 +264,6 @@ export default function PendaftarPage() {
                                         </td>
                                         <td className="py-4 px-4 lg:px-6 hidden lg:table-cell text-gray-600">
                                             {reg.nisn}
-                                        </td>
-                                        <td className="py-4 px-4 lg:px-6 hidden lg:table-cell text-gray-600">
-                                            {reg.email}
                                         </td>
                                         <td className="py-4 px-4 lg:px-6">
                                             {getStatusBadge(reg.status)}
