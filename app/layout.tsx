@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { GraduationCap } from 'lucide-react'
+import Footer from '@/components/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -60,43 +61,7 @@ export default function RootLayout({
 
         {children}
 
-        <footer className="bg-gray-900 text-white py-12">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <GraduationCap className="w-8 h-8" />
-                  <h3 className="font-bold text-xl">SMP Terpadu Al-Ittihadiyah</h3>
-                </div>
-                <p className="text-gray-400">
-                  Lembaga pendidikan Islam terpadu yang berkomitmen mencetak generasi unggul dan berakhlak mulia.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="font-semibold mb-4">Kontak</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li>📍 Jl. Pendidikan No. 123, Medan</li>
-                  <li>📞 (061) 1234-5678</li>
-                  <li>✉️ info@smptalittihadiyah.sch.id</li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-semibold mb-4">Jam Operasional</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li>Senin - Jumat: 07:30 - 16:00</li>
-                  <li>Sabtu: 07:30 - 12:00</li>
-                  <li>Minggu: Libur</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-              <p>&copy; 2026 SMP Terpadu Al-Ittihadiyah. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   )
