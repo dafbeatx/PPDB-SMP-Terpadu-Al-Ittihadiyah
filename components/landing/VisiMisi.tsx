@@ -18,7 +18,7 @@ export default async function VisiMisi() {
     ].filter(Boolean)
 
     return (
-        <section className="py-16 md:py-24 bg-white overflow-hidden">
+        <section id="visi-misi" className="py-16 md:py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="max-w-5xl mx-auto">
                     <ScrollReveal direction="up">

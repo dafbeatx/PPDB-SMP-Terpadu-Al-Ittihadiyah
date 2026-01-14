@@ -13,7 +13,7 @@ export default async function Profile() {
     const paragraph2 = content['profile.paragraph_2'] || ''
 
     return (
-        <section className="py-16 md:py-24 bg-white overflow-hidden">
+        <section id="profil" className="py-16 md:py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="max-w-6xl mx-auto">
                     {/* Header */}

@@ -11,9 +11,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <button
                 className={cn(
-                    'inline-flex items-center justify-center rounded-lg font-semibold transition-all',
+                    'inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
                     'disabled:pointer-events-none disabled:opacity-50',
+                    'hover:scale-105 active:scale-95',
                     {
                         'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-600':
                             variant === 'primary',
