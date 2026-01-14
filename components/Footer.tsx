@@ -1,5 +1,6 @@
 import { getContentMap } from '@/lib/content'
 import { GraduationCap, MapPin, Phone, Mail, Instagram, Github, Clock } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function Footer() {
     // Fetch footer content from CMS
@@ -136,8 +137,8 @@ export default async function Footer() {
                 <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-gray-500 text-sm text-center md:text-left">
                     <p>&copy; {new Date().getFullYear()} SMP Terpadu Al-Ittihadiyah. All rights reserved.</p>
                     <div className="flex items-center justify-center gap-6">
-                        <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
-                        <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
+                        <Link href="/kebijakan-privasi" className="hover:text-white transition-colors">Kebijakan Privasi</Link>
+                        <Link href="/syarat-ketentuan" className="hover:text-white transition-colors">Syarat & Ketentuan</Link>
                     </div>
                 </div>
             </div>
