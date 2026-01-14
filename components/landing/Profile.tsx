@@ -40,19 +40,25 @@ export default async function Profile() {
                                 <div>
                                     <h3 className="font-semibold text-green-700 text-lg mb-2">🏫 Fasilitas</h3>
                                     <ul className="text-gray-700 space-y-2 list-none">
-                                        <li>✓ Ruang kelas ber-AC</li>
-                                        <li>✓ Laboratorium Komputer & Sains</li>
-                                        <li>✓ Perpustakaan Digital</li>
-                                        <li>✓ Lapangan Olahraga</li>
+                                        {[1, 2, 3, 4].map((num) => {
+                                            const item = content[`fasilitas.item_${num}`]
+                                            if (!item) return null
+                                            return (
+                                                <li key={num}>✓ {item}</li>
+                                            )
+                                        })}
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-green-700 text-lg mb-2">👨‍🏫 Program Unggulan</h3>
+                                    <h3 className="font-semibold text-green-700 text-lg mb-2">🎯 Program Unggulan</h3>
                                     <ul className="text-gray-700 space-y-2 list-none">
-                                        <li>✓ Tahfidz Al-Quran</li>
-                                        <li>✓ Bahasa Arab & Inggris</li>
-                                        <li>✓ Olimpiade Sains</li>
-                                        <li>✓ Ekstrakurikuler Beragam</li>
+                                        {[1, 2, 3, 4].map((num) => {
+                                            const item = content[`program.item_${num}`]
+                                            if (!item) return null
+                                            return (
+                                                <li key={num}>✓ {item}</li>
+                                            )
+                                        })}
                                     </ul>
                                 </div>
                             </div>
