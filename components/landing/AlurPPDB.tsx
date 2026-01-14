@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { FileText, Upload, CheckCircle, UserCheck } from 'lucide-react'
 import { getContentMap } from '@/lib/content'
+import ScrollReveal from '@/components/ScrollReveal'
 
 export default async function AlurPPDB() {
     const content = await getContentMap('alur')
@@ -39,17 +40,19 @@ export default async function AlurPPDB() {
     ]
 
     return (
-        <section id="alur" className="py-16 md:py-24 bg-white">
+        <section id="alur" className="py-16 md:py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            {title}
-                        </h2>
-                        <p className="text-lg text-gray-600 mb-8">
-                            {subtitle}
-                        </p>
-                    </div>
+                    <ScrollReveal direction="up">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                                {title}
+                            </h2>
+                            <p className="text-lg text-gray-600 mb-8">
+                                {subtitle}
+                            </p>
+                        </div>
+                    </ScrollReveal>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                         {steps.map((step, index) => {
@@ -57,46 +60,54 @@ export default async function AlurPPDB() {
                             const isLast = index === steps.length - 1
 
                             return (
-                                <div key={index} className="relative">
-                                    <div className="text-center">
-                                        <div className="relative inline-block mb-4">
-                                            <div className="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-2 mx-auto">
-                                                {step.number}
+                                <ScrollReveal
+                                    key={index}
+                                    direction="up"
+                                    delay={index * 0.15}
+                                >
+                                    <div className="relative">
+                                        <div className="text-center group">
+                                            <div className="relative inline-block mb-4">
+                                                <div className="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-2 mx-auto group-hover:scale-110 transition-transform">
+                                                    {step.number}
+                                                </div>
+                                                {!isLast && (
+                                                    <div className="hidden lg:block absolute top-8 left-full w-24 h-0.5 bg-green-200"></div>
+                                                )}
                                             </div>
-                                            {!isLast && (
-                                                <div className="hidden lg:block absolute top-8 left-full w-24 h-0.5 bg-green-200"></div>
-                                            )}
-                                        </div>
 
-                                        <div className="bg-green-50 p-4 rounded-lg mb-3">
-                                            <Icon className="w-10 h-10 text-green-600 mx-auto" />
-                                        </div>
+                                            <div className="bg-green-50 p-4 rounded-lg mb-3 group-hover:bg-green-100 transition-colors">
+                                                <Icon className="w-10 h-10 text-green-600 mx-auto group-hover:scale-110 transition-transform" />
+                                            </div>
 
-                                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                            {step.title}
-                                        </h3>
-                                        <p className="text-gray-600 leading-relaxed">
-                                            {step.description}
-                                        </p>
+                                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                                {step.title}
+                                            </h3>
+                                            <p className="text-gray-600 leading-relaxed text-sm">
+                                                {step.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                </ScrollReveal>
                             )
                         })}
                     </div>
 
-                    <div className="text-center bg-green-50 rounded-xl p-8">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                            {ctaTitle}
-                        </h3>
-                        <p className="text-gray-600 mb-6 text-lg">
-                            {ctaText}
-                        </p>
-                        <Link href="/daftar">
-                            <Button size="lg">
-                                Mulai Pendaftaran Sekarang
-                            </Button>
-                        </Link>
-                    </div>
+                    <ScrollReveal direction="up" delay={0.4}>
+                        <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 md:p-12 border border-green-100 shadow-sm md:hover:shadow-md transition-shadow">
+                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                                {ctaTitle}
+                            </h3>
+                            <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto">
+                                {ctaText}
+                            </p>
+                            <Link href="/daftar">
+                                <Button size="lg" className="px-8 py-6 text-lg rounded-xl shadow-lg shadow-green-200">
+                                    Mulai Pendaftaran Sekarang
+                                </Button>
+                            </Link>
+                        </div>
+                    </ScrollReveal>
                 </div>
             </div>
         </section>

@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { GraduationCap } from 'lucide-react'
 import Footer from '@/components/Footer'
+import FloatingFAQBot from '@/components/FloatingFAQBot'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -66,7 +67,7 @@ export default function RootLayout({
         </nav>
 
         {children}
-
+        <FloatingFAQBot />
         <Footer />
       </body>
     </html>

@@ -1,6 +1,7 @@
 import Card from '@/components/ui/Card'
 import { Trophy, Users, BookOpen, Star } from 'lucide-react'
 import { getContentMap } from '@/lib/content'
+import ScrollReveal from '@/components/ScrollReveal'
 
 export default async function Keunggulan() {
     // Fetch content from CMS
@@ -35,38 +36,45 @@ export default async function Keunggulan() {
     ]
 
     return (
-        <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-green-50">
+        <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            {content['keunggulan.title'] || 'Keunggulan Sekolah'}
-                        </h2>
-                        <p className="text-lg text-gray-600">
-                            {content['keunggulan.subtitle'] || 'Mengapa memilih SMP Terpadu Al-Ittihadiyah?'}
-                        </p>
-                    </div>
+                    <ScrollReveal direction="up">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                                {content['keunggulan.title'] || 'Keunggulan Sekolah'}
+                            </h2>
+                            <p className="text-lg text-gray-600">
+                                {content['keunggulan.subtitle'] || 'Mengapa memilih SMP Terpadu Al-Ittihadiyah?'}
+                            </p>
+                        </div>
+                    </ScrollReveal>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {keunggulanList.map((item, index) => {
                             const Icon = item.icon
                             return (
-                                <Card
+                                <ScrollReveal
                                     key={index}
-                                    className="p-6 hover:shadow-lg transition-shadow duration-300 text-center"
+                                    direction="up"
+                                    delay={0.1 * index}
                                 >
-                                    <div className="flex justify-center mb-4">
-                                        <div className={`p-4 rounded-full ${item.color}`}>
-                                            <Icon className="w-8 h-8" />
+                                    <Card
+                                        className="p-6 md:hover:shadow-xl md:hover:-translate-y-2 transition-all duration-300 text-center h-full group border-none shadow-sm"
+                                    >
+                                        <div className="flex justify-center mb-4 text-center">
+                                            <div className={`p-4 rounded-full ${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                                                <Icon className="w-8 h-8" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-gray-600 leading-relaxed">
-                                        {item.description}
-                                    </p>
-                                </Card>
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-gray-600 leading-relaxed text-sm">
+                                            {item.description}
+                                        </p>
+                                    </Card>
+                                </ScrollReveal>
                             )
                         })}
                     </div>
