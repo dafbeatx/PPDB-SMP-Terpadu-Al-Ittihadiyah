@@ -32,27 +32,29 @@ export default function RootLayout({
       <body className={inter.className}>
         <nav className="bg-white shadow-md sticky top-0 z-50">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-20">
-              <Link href="/" className="flex items-center gap-3">
-                <GraduationCap className="w-8 h-8 text-green-600" />
-                <div>
-                  <div className="font-bold text-lg text-gray-900">SMP Terpadu Al-Ittihadiyah</div>
-                  <div className="text-sm text-gray-600">PPDB 2026/2027</div>
+            <div className="flex items-center justify-between h-16 md:h-20">
+              <Link href="/" className="flex items-center gap-2 md:gap-3">
+                <GraduationCap className="w-7 h-7 md:w-8 md:h-8 text-green-600 flex-shrink-0" />
+                <div className="hidden sm:block">
+                  <div className="font-bold text-sm md:text-lg text-gray-900">SMP Terpadu Al-Ittihadiyah</div>
+                  <div className="text-xs md:text-sm text-gray-600">PPDB 2026/2027</div>
                 </div>
               </Link>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 <Link
                   href="/login"
-                  className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-sm md:text-base"
+                  className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-3 py-1.5 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-xs md:text-base whitespace-nowrap"
                 >
-                  Login Admin
+                  <span className="hidden sm:inline">Login Admin</span>
+                  <span className="sm:hidden">Login</span>
                 </Link>
                 <Link
                   href="/daftar"
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-sm md:text-base"
+                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 md:px-6 md:py-3 rounded-lg font-semibold transition-colors text-xs md:text-base whitespace-nowrap"
                 >
-                  Daftar Sekarang
+                  <span className="hidden sm:inline">Daftar Sekarang</span>
+                  <span className="sm:hidden">Daftar</span>
                 </Link>
               </div>
             </div>
