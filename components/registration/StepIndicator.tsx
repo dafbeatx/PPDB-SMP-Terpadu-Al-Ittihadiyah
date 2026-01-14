@@ -11,44 +11,92 @@ const steps = [
 
 export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
     return (
-        <div className="w-full">
-            <div className="flex justify-between items-center">
-                {steps.map((step, index) => {
-                    const isActive = step.number === currentStep
-                    const isCompleted = step.number < currentStep
-                    const isLast = index === steps.length - 1
+        <div className="w-full mb-8">
+            {/* Desktop and Tablet View */}
+            <div className="hidden sm:block">
+                <div className="flex items-start justify-between relative">
+                    {/* Progress Bar Background */}
+                    <div className="absolute top-6 left-0 right-0 h-1 bg-gray-200" style={{ marginLeft: '10%', marginRight: '10%', zIndex: 0 }}></div>
 
-                    return (
-                        <div key={step.number} className="flex items-center flex-1">
-                            <div className="flex flex-col items-center flex-1">
+                    {steps.map((step) => {
+                        const isActive = step.number === currentStep
+                        const isCompleted = step.number < currentStep
+                        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100
+
+                        return (
+                            <div key={step.number} className="flex-1 flex flex-col items-center relative z-10">
+                                {/* Circle */}
                                 <div className={`
-                  w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-lg
-                  transition-all duration-300
-                  ${isCompleted ? 'bg-green-600 text-white' : ''}
-                  ${isActive ? 'bg-blue-600 text-white ring-4 ring-blue-200' : ''}
-                  ${!isActive && !isCompleted ? 'bg-gray-200 text-gray-500' : ''}
-                `}>
+                                    w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg
+                                    transition-all duration-300 shadow-md
+                                    ${isCompleted ? 'bg-green-600 text-white' : ''}
+                                    ${isActive ? 'bg-blue-600 text-white ring-4 ring-blue-200 scale-110' : ''}
+                                    ${!isActive && !isCompleted ? 'bg-white border-2 border-gray-300 text-gray-500' : ''}
+                                `}>
                                     {isCompleted ? '✓' : step.number}
                                 </div>
+
+                                {/* Label */}
                                 <div className={`
-                  mt-2 text-xs md:text-sm font-semibold text-center
-                  ${isActive ? 'text-blue-600' : ''}
-                  ${isCompleted ? 'text-green-600' : ''}
-                  ${!isActive && !isCompleted ? 'text-gray-500' : ''}
-                `}>
+                                    mt-3 text-sm font-semibold text-center whitespace-nowrap
+                                    transition-colors duration-300
+                                    ${isActive ? 'text-blue-600' : ''}
+                                    ${isCompleted ? 'text-green-600' : ''}
+                                    ${!isActive && !isCompleted ? 'text-gray-500' : ''}
+                                `}>
                                     {step.label}
                                 </div>
                             </div>
+                        )
+                    })}
 
-                            {!isLast && (
+                    {/* Active Progress Bar */}
+                    <div
+                        className="absolute top-6 left-0 h-1 bg-green-600 transition-all duration-500"
+                        style={{
+                            marginLeft: '10%',
+                            width: `${Math.max(0, Math.min(100, ((currentStep - 1) / (totalSteps - 1)) * 80))}%`,
+                            zIndex: 1
+                        }}
+                    ></div>
+                </div>
+            </div>
+
+            {/* Mobile View */}
+            <div className="sm:hidden">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                    {steps.map((step) => {
+                        const isActive = step.number === currentStep
+                        const isCompleted = step.number < currentStep
+
+                        return (
+                            <div key={step.number} className="flex items-center">
                                 <div className={`
-                  h-1 flex-1 mx-2 md:mx-4 transition-all duration-300
-                  ${isCompleted ? 'bg-green-600' : 'bg-gray-200'}
-                `}></div>
-                            )}
-                        </div>
-                    )
-                })}
+                                    w-10 h-10 rounded-full flex items-center justify-center font-bold text-base
+                                    transition-all duration-300
+                                    ${isCompleted ? 'bg-green-600 text-white' : ''}
+                                    ${isActive ? 'bg-blue-600 text-white ring-4 ring-blue-200' : ''}
+                                    ${!isActive && !isCompleted ? 'bg-white border-2 border-gray-300 text-gray-500' : ''}
+                                `}>
+                                    {isCompleted ? '✓' : step.number}
+                                </div>
+                                {step.number < totalSteps && (
+                                    <div className={`
+                                        w-8 h-1 mx-1
+                                        ${step.number < currentStep ? 'bg-green-600' : 'bg-gray-200'}
+                                    `}></div>
+                                )}
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Current Step Label for Mobile */}
+                <div className="text-center">
+                    <span className="text-sm font-semibold text-blue-600">
+                        {steps[currentStep - 1].label}
+                    </span>
+                </div>
             </div>
         </div>
     )
