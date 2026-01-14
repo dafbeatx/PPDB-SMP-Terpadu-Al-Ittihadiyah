@@ -14,8 +14,13 @@ export default async function Hero() {
     const statAccreditation = content['hero.stat_accreditation'] || 'A'
 
     return (
-        <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white py-20 md:py-32">
-            <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10"></div>
+        <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white py-20 md:py-32 overflow-hidden">
+            {/* Background Image with Opacity */}
+            <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 z-0"
+                style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+            ></div>
+            <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 z-[1]"></div>
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mx-auto text-center">
