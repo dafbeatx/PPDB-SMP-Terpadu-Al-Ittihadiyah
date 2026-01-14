@@ -19,6 +19,7 @@ export default function MultiStepForm() {
     const [studentData, setStudentData] = useState<StudentFormData | null>(null)
     const [parentData, setParentData] = useState<ParentFormData | null>(null)
     const [documents, setDocuments] = useState<DocumentData>({})
+    const [registrationId, setRegistrationId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const totalSteps = 3
@@ -38,29 +39,35 @@ export default function MultiStepForm() {
         setIsSubmitting(true)
 
         try {
-            // First, create the registration
-            const registrationResponse = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    student: studentData,
-                    parent: parentData,
-                }),
-            })
+            let currentRegId = registrationId
 
-            if (!registrationResponse.ok) {
-                const errorData = await registrationResponse.json()
-                throw new Error(errorData.details || errorData.error || 'Gagal menyimpan data pendaftaran')
+            // First, create the registration if it doesn't exist yet
+            if (!currentRegId) {
+                const registrationResponse = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student: studentData,
+                        parent: parentData,
+                    }),
+                })
+
+                if (!registrationResponse.ok) {
+                    const errorData = await registrationResponse.json()
+                    throw new Error(errorData.details || errorData.error || 'Gagal menyimpan data pendaftaran')
+                }
+
+                const result = await registrationResponse.json()
+                currentRegId = result.registrationId
+                setRegistrationId(currentRegId)
             }
-
-            const { registrationId } = await registrationResponse.json()
 
             // Upload documents
             for (const [type, file] of Object.entries(docs)) {
                 if (file) {
                     const formData = new FormData()
                     formData.append('file', file)
-                    formData.append('registrationId', registrationId)
+                    formData.append('registrationId', currentRegId as string)
                     formData.append('documentType', type)
 
                     const uploadResponse = await fetch('/api/upload', {
@@ -76,7 +83,7 @@ export default function MultiStepForm() {
             }
 
             // Redirect to confirmation page
-            window.location.href = `/daftar/konfirmasi?id=${registrationId}`
+            window.location.href = `/daftar/konfirmasi?id=${currentRegId}`
         } catch (error: any) {
             console.error('Error submitting registration:', error)
             const errorMsg = error.message || 'Terjadi kesalahan saat mendaftar.'

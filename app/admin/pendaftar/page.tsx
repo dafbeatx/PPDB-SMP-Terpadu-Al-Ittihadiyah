@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import { FileDown, Search, Eye, Trash2, Users, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { FileDown, Search, Eye, Trash2, Users, CheckCircle, XCircle, Clock, Check, X } from 'lucide-react'
 
 interface Registration {
     id: string
@@ -78,6 +78,47 @@ export default function PendaftarPage() {
         } catch (error) {
             console.error('Error exporting:', error)
             alert('Gagal export data. Silakan coba lagi.')
+        }
+    }
+
+    const handleStatusUpdate = async (id: string, newStatus: string) => {
+        try {
+            const response = await fetch(`/api/admin/registrations/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus }),
+            })
+
+            if (!response.ok) throw new Error('Gagal update status')
+
+            // Update local state
+            setRegistrations(prev => prev.map(reg =>
+                reg.id === id ? { ...reg, status: newStatus } : reg
+            ))
+        } catch (error) {
+            console.error('Error updating status:', error)
+            alert('Gagal memperbarui status. Silakan coba lagi.')
+        }
+    }
+
+    const handleDelete = async (id: string, regNum: string) => {
+        if (!confirm(`Apakah Anda yakin ingin menghapus pendaftaran ${regNum}?\nData siswa, orang tua, dan dokumen terkait akan dihapus permanen.`)) {
+            return
+        }
+
+        try {
+            const response = await fetch(`/api/admin/registrations/${id}`, {
+                method: 'DELETE',
+            })
+
+            if (!response.ok) throw new Error('Gagal menghapus data')
+
+            // Update local state
+            setRegistrations(prev => prev.filter(reg => reg.id !== id))
+            alert('Data pendaftaran berhasil dihapus.')
+        } catch (error) {
+            console.error('Error deleting registration:', error)
+            alert('Gagal menghapus data. Silakan coba lagi.')
         }
     }
 
@@ -276,12 +317,30 @@ export default function PendaftarPage() {
                                             })}
                                         </td>
                                         <td className="py-4 px-4 lg:px-6">
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-1 lg:gap-2">
                                                 <button
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                    title="Lihat Detail"
+                                                    onClick={() => handleStatusUpdate(reg.id, 'approved')}
+                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200"
+                                                    title="Terima Pendaftaran"
+                                                    disabled={reg.status === 'approved'}
                                                 >
-                                                    <Eye className="w-4 h-4" />
+                                                    <Check className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(reg.id, 'rejected')}
+                                                    className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors border border-transparent hover:border-orange-200"
+                                                    title="Tolak Pendaftaran"
+                                                    disabled={reg.status === 'rejected'}
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                                <div className="w-px h-6 bg-gray-200 mx-1 hidden lg:block" />
+                                                <button
+                                                    onClick={() => handleDelete(reg.id, reg.registration_number)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200"
+                                                    title="Hapus Pendaftaran"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
