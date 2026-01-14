@@ -58,9 +58,12 @@ export async function POST(request: Request) {
             })
 
         if (uploadError) {
-            console.error('Upload error:', uploadError)
+            console.error('Upload error details:', uploadError)
             return NextResponse.json(
-                { error: 'Gagal upload file' },
+                {
+                    error: 'Gagal upload file',
+                    details: uploadError.message || JSON.stringify(uploadError)
+                },
                 { status: 500 }
             )
         }
@@ -82,11 +85,14 @@ export async function POST(request: Request) {
             })
 
         if (dbError) {
-            console.error('Database error:', dbError)
+            console.error('Database error details:', dbError)
             // Clean up uploaded file
             await supabase.storage.from('documents').remove([uploadData.path])
             return NextResponse.json(
-                { error: 'Gagal menyimpan metadata dokumen' },
+                {
+                    error: 'Gagal menyimpan metadata dokumen',
+                    details: dbError.message
+                },
                 { status: 500 }
             )
         }
@@ -99,10 +105,10 @@ export async function POST(request: Request) {
             compressedSize: compressedSize,
             savedPercentage: (((file.size - compressedSize) / file.size) * 100).toFixed(1),
         })
-    } catch (error) {
-        console.error('Unexpected error:', error)
+    } catch (error: any) {
+        console.error('Unexpected error in /api/upload:', error)
         return NextResponse.json(
-            { error: 'Terjadi kesalahan server' },
+            { error: 'Terjadi kesalahan server', details: error.message },
             { status: 500 }
         )
     }

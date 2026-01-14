@@ -69,7 +69,8 @@ export default function MultiStepForm() {
                     })
 
                     if (!uploadResponse.ok) {
-                        throw new Error(`Gagal upload ${type}`)
+                        const errorData = await uploadResponse.json()
+                        throw new Error(`Gagal upload ${type}: ${errorData.details || errorData.error}`)
                     }
                 }
             }
