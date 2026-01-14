@@ -6,12 +6,12 @@ import Image from 'next/image'
 export default async function Hero() {
     const content = await getContentMap('hero')
 
-    const schoolName = content.school_name || 'SMP Terpadu Al-Ittihadiyah'
-    const tagline = content.tagline || 'Pendaftaran Peserta Didik Baru (PPDB)'
-    const year = content.year || 'Tahun Ajaran 2026/2027'
-    const statExperience = content.stat_experience || '20'
-    const statGraduate = content.stat_graduate || '95'
-    const statAccreditation = content.stat_accreditation || 'A'
+    const schoolName = content['hero.school_name'] || 'SMP Terpadu Al-Ittihadiyah'
+    const tagline = content['hero.tagline'] || 'Pendaftaran Peserta Didik Baru (PPDB)'
+    const year = content['hero.year'] || 'Tahun Ajaran 2026/2027'
+    const statExperience = content['hero.stat_experience'] || '20'
+    const statGraduate = content['hero.stat_graduate'] || '95'
+    const statAccreditation = content['hero.stat_accreditation'] || 'A'
 
     return (
         <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white py-20 md:py-32">

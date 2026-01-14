@@ -15,25 +15,25 @@ export default async function Footer() {
                             <h3 className="font-bold text-xl">SMP Terpadu Al-Ittihadiyah</h3>
                         </div>
                         <p className="text-gray-400">
-                            {footer.school_desc || 'Lembaga pendidikan Islam terpadu yang berkomitmen mencetak generasi unggul dan berakhlak mulia.'}
+                            {footer['footer.school_desc'] || 'Lembaga pendidikan Islam terpadu yang berkomitmen mencetak generasi unggul dan berakhlak mulia.'}
                         </p>
                     </div>
 
                     <div>
                         <h4 className="font-semibold mb-4">Kontak</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li>📍 {footer.address || 'Alamat belum diatur'}</li>
-                            <li>📞 {footer.phone || 'Telepon belum diatur'}</li>
-                            <li>✉️ {footer.email || 'Email belum diatur'}</li>
+                            <li>📍 {footer['footer.address'] || 'Alamat belum diatur'}</li>
+                            <li>📞 {footer['footer.phone'] || 'Telepon belum diatur'}</li>
+                            <li>✉️ {footer['footer.email'] || 'Email belum diatur'}</li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-semibold mb-4">Jam Operasional</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li>{footer.hours_weekday || 'Senin - Jumat: Belum diatur'}</li>
-                            <li>{footer.hours_saturday || 'Sabtu: Belum diatur'}</li>
-                            <li>{footer.hours_sunday || 'Minggu: Libur'}</li>
+                            <li>{footer['footer.hours_weekday'] || 'Senin - Jumat: Belum diatur'}</li>
+                            <li>{footer['footer.hours_saturday'] || 'Sabtu: Belum diatur'}</li>
+                            <li>{footer['footer.hours_sunday'] || 'Minggu: Libur'}</li>
                         </ul>
                     </div>
                 </div>

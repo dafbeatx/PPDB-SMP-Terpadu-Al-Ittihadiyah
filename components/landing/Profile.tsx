@@ -5,10 +5,11 @@ import { getContentMap } from '@/lib/content'
 export default async function Profile() {
     const content = await getContentMap('profile')
 
-    const title = content.title || 'Profil Sekolah'
-    const subtitle = content.subtitle || 'Mengenal lebih dekat SMP Terpadu Al-Ittihadiyah'
-    const paragraph1 = content.paragraph_1 || ''
-    const paragraph2 = content.paragraph_2 || ''
+    // Profile section uses 'profile.key' format for main content
+    const title = content['profile.title'] || 'Profil Sekolah'
+    const subtitle = content['profile.subtitle'] || 'Mengenal lebih dekat SMP Terpadu Al-Ittihadiyah'
+    const paragraph1 = content['profile.paragraph_1'] || ''
+    const paragraph2 = content['profile.paragraph_2'] || ''
 
     return (
         <section className="py-16 md:py-24 bg-white">
