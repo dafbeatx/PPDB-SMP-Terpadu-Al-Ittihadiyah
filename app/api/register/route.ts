@@ -8,10 +8,10 @@ export async function POST(request: Request) {
         const supabase = await createClient()
 
         // Start a transaction-like operation
-        // 1. Create registration
+        // 1. Create registration with empty registration_number so trigger can populate it
         const { data: registration, error: regError } = await supabase
             .from('registrations')
-            .insert({})
+            .insert({ registration_number: '' })
             .select('id, registration_number')
             .single()
 
