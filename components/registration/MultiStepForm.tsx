@@ -49,7 +49,8 @@ export default function MultiStepForm() {
             })
 
             if (!registrationResponse.ok) {
-                throw new Error('Gagal menyimpan data pendaftaran')
+                const errorData = await registrationResponse.json()
+                throw new Error(errorData.details || errorData.error || 'Gagal menyimpan data pendaftaran')
             }
 
             const { registrationId } = await registrationResponse.json()
@@ -75,9 +76,10 @@ export default function MultiStepForm() {
 
             // Redirect to confirmation page
             window.location.href = `/daftar/konfirmasi?id=${registrationId}`
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error submitting registration:', error)
-            alert('Terjadi kesalahan saat mendaftar. Silakan coba lagi.')
+            const errorMsg = error.message || 'Terjadi kesalahan saat mendaftar.'
+            alert(`${errorMsg}\n\nSilakan coba lagi atau hubungi admin jika masalah berlanjut.`)
             setIsSubmitting(false)
         }
     }

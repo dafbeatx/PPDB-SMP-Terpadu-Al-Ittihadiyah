@@ -16,14 +16,18 @@ export async function POST(request: Request) {
             .single()
 
         if (regError || !registration) {
-            console.error('Registration error:', regError)
+            console.error('Registration error details:', regError)
             return NextResponse.json(
-                { error: 'Gagal membuat pendaftaran' },
+                {
+                    error: 'Gagal membuat pendaftaran',
+                    details: regError?.message || 'No registration returned'
+                },
                 { status: 500 }
             )
         }
 
         // 2. Insert student data
+        console.log('Inserting student data for registration:', registration.id)
         const { error: studentError } = await supabase
             .from('students')
             .insert({
@@ -32,16 +36,17 @@ export async function POST(request: Request) {
             })
 
         if (studentError) {
-            console.error('Student error:', studentError)
+            console.error('Student error details:', studentError)
             // Rollback by deleting registration
             await supabase.from('registrations').delete().eq('id', registration.id)
             return NextResponse.json(
-                { error: 'Gagal menyimpan data siswa' },
+                { error: 'Gagal menyimpan data siswa', details: studentError.message },
                 { status: 500 }
             )
         }
 
         // 3. Insert parent data
+        console.log('Inserting parent data for registration:', registration.id)
         const { error: parentError } = await supabase
             .from('parents')
             .insert({
@@ -50,12 +55,12 @@ export async function POST(request: Request) {
             })
 
         if (parentError) {
-            console.error('Parent error:', parentError)
+            console.error('Parent error details:', parentError)
             // Rollback
             await supabase.from('students').delete().eq('registration_id', registration.id)
             await supabase.from('registrations').delete().eq('id', registration.id)
             return NextResponse.json(
-                { error: 'Gagal menyimpan data orang tua' },
+                { error: 'Gagal menyimpan data orang tua', details: parentError.message },
                 { status: 500 }
             )
         }
@@ -65,10 +70,10 @@ export async function POST(request: Request) {
             registrationId: registration.id,
             registrationNumber: registration.registration_number,
         })
-    } catch (error) {
-        console.error('Unexpected error:', error)
+    } catch (error: any) {
+        console.error('Unexpected error in /api/register:', error)
         return NextResponse.json(
-            { error: 'Terjadi kesalahan server' },
+            { error: 'Terjadi kesalahan server', details: error.message },
             { status: 500 }
         )
     }
