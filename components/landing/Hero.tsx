@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
-import { GraduationCap } from 'lucide-react'
 import { getContentMap } from '@/lib/content'
+import Image from 'next/image'
 
 export default async function Hero() {
     const content = await getContentMap('hero')
@@ -21,7 +21,13 @@ export default async function Hero() {
                 <div className="max-w-4xl mx-auto text-center">
                     <div className="flex justify-center mb-6">
                         <div className="bg-white/10 backdrop-blur-sm p-4 rounded-full">
-                            <GraduationCap className="w-16 h-16" />
+                            <Image
+                                src="/logo.png"
+                                alt="Logo SMP Terpadu Al-Ittihadiyah"
+                                width={64}
+                                height={64}
+                                className="w-16 h-16 object-contain"
+                            />
                         </div>
                     </div>
 
