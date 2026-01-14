@@ -231,14 +231,14 @@ export default function DocumentUpload({
                     )
                 })}
 
-                <div className="flex gap-4 pt-6 border-t">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 pt-6 border-t">
                     <Button
                         type="button"
                         onClick={onBack}
                         variant="outline"
                         size="lg"
                         disabled={isSubmitting}
-                        className="gap-2"
+                        className="gap-2 w-full sm:w-auto"
                     >
                         <ArrowLeft className="w-5 h-5" />
                         Kembali

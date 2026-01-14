@@ -177,7 +177,7 @@ export default function StudentForm({ onSubmit, initialData }: StudentFormProps)
                 />
 
                 <div className="flex justify-end pt-4">
-                    <Button type="submit" size="lg">
+                    <Button type="submit" size="lg" className="w-full sm:w-auto">
                         Lanjut ke Data Orang Tua
                     </Button>
                 </div>

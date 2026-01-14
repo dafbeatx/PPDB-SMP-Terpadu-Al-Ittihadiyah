@@ -169,13 +169,13 @@ export default function ParentForm({ onSubmit, onBack, initialData }: ParentForm
                     </p>
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 pt-4">
                     <Button
                         type="button"
                         onClick={onBack}
                         variant="outline"
                         size="lg"
-                        className="gap-2"
+                        className="gap-2 w-full sm:w-auto"
                     >
                         <ArrowLeft className="w-5 h-5" />
                         Kembali
