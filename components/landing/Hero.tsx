@@ -20,7 +20,7 @@ export default async function Hero() {
     const statAccreditation = content['hero.stat_accreditation'] || 'A'
 
     return (
-        <section id="hero" className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white py-20 md:py-32 overflow-hidden">
+        <section id="hero" className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white pt-28 pb-20 md:py-32 overflow-hidden">
             <ParallaxHeroBg />
 
             <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 z-[1]"></div>
@@ -28,39 +28,41 @@ export default async function Hero() {
             <div className="container mx-auto px-4 relative z-10">
                 <ScrollReveal direction="up" distance={40}>
                     <div className="max-w-4xl mx-auto text-center">
-                        <div className="flex justify-center mb-6">
-                            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-full hover:scale-110 transition-transform duration-300">
+                        <div className="flex justify-center mb-4 md:mb-8">
+                            <div className="bg-white/10 backdrop-blur-md p-3 md:p-4 rounded-3xl border border-white/20 hover:scale-110 transition-transform duration-300 shadow-2xl">
                                 <Image
                                     src="/logo.png"
                                     alt="Logo SMP Terpadu Al-Ittihadiyah"
-                                    width={64}
-                                    height={64}
-                                    className="w-16 h-16 object-contain"
+                                    width={80}
+                                    height={80}
+                                    className="w-16 h-16 md:w-20 md:h-20 object-contain"
                                 />
                             </div>
                         </div>
 
-                        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight tracking-tight">
-                            {schoolName}
+                        <h1 className="text-[32px] md:text-6xl font-extrabold mb-4 leading-[1.15] md:leading-tight tracking-tight">
+                            <span className="block md:inline">SMP Terpadu</span>
+                            <span className="hidden md:inline"> </span>
+                            <span className="block md:inline text-green-300 md:text-white mt-1 md:mt-0">Al-Ittihadiyah</span>
                         </h1>
 
-                        <p className="text-xl md:text-2xl mb-4 text-green-50 font-medium">
+                        <p className="text-lg md:text-2xl mb-6 md:mb-8 text-green-50 font-medium max-w-2xl mx-auto leading-relaxed">
                             {tagline}
                         </p>
 
-                        <p className="text-lg md:text-xl mb-10 text-white/90 max-w-2xl mx-auto">
+                        <div className="bg-white/10 backdrop-blur-sm inline-block px-4 py-1.5 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest text-white/90 border border-white/10 mb-10">
                             {year}
-                        </p>
+                        </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link href="/daftar">
-                                <Button size="lg" className="w-full sm:w-auto bg-white text-green-700 hover:bg-gray-100 shadow-xl shadow-green-900/20">
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                            <Link href="/daftar" className="w-full sm:w-auto">
+                                <Button size="lg" className="w-full sm:w-80 bg-white text-green-700 hover:bg-gray-100 shadow-xl shadow-green-900/40 text-lg py-7">
                                     Daftar Sekarang
                                 </Button>
                             </Link>
-                            <a href="#alur">
-                                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white/10 shadow-lg">
-                                    Lihat Alur Pendaftaran
+                            <a href="#alur" className="w-full sm:w-auto">
+                                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white/10 shadow-lg px-8">
+                                    Lihat Alur
                                 </Button>
                             </a>
                         </div>
