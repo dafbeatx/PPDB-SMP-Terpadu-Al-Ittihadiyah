@@ -4,7 +4,12 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { GraduationCap } from 'lucide-react'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
 
 export const metadata: Metadata = {
   title: 'PPDB SMP Terpadu Al-Ittihadiyah - Pendaftaran Siswa Baru',
