@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 
 export async function GET(request: Request) {
     try {
@@ -135,6 +136,17 @@ export async function PUT(request: Request) {
         }
 
         console.log('✅ All updates successful!')
+
+        // Revalidate all pages to clear Next.js cache
+        console.log('🔄 Revalidating cache for all pages...')
+        try {
+            revalidatePath('/', 'layout')  // Revalidate entire site including all nested paths
+            console.log('✅ Cache revalidated successfully')
+        } catch (revalidateError) {
+            console.error('⚠️  Cache revalidation warning:', revalidateError)
+            // Don't fail the request if revalidation fails
+        }
+
         return NextResponse.json({
             success: true,
             message: `Successfully updated ${succeeded.length} items`,
