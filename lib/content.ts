@@ -46,7 +46,9 @@ export async function getContentMap(category: string): Promise<Record<string, st
     const map: Record<string, string> = {}
 
     contents.forEach((content) => {
-        map[content.key] = content.value
+        // Use section.key format if section exists, otherwise just key
+        const mapKey = content.section ? `${content.section}.${content.key}` : content.key
+        map[mapKey] = content.value
     })
 
     return map
