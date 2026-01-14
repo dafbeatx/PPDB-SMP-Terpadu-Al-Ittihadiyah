@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import { ArrowLeft, Upload, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { validateFile, DOCUMENT_TYPES } from '@/lib/validations/file'
 import { getDocumentTypeLabel } from '@/lib/utils'
+import { compressImageClient, formatFileSize } from '@/lib/utils/imageCompression'
 import type { DocumentData } from './MultiStepForm'
 
 interface DocumentUploadProps {
@@ -20,6 +21,10 @@ interface FileState {
     preview: string | null
     error: string | null
     uploading: boolean
+    compressing: boolean
+    compressionProgress: number
+    originalSize?: number
+    compressedSize?: number
 }
 
 export default function DocumentUpload({
@@ -34,18 +39,24 @@ export default function DocumentUpload({
             preview: null,
             error: null,
             uploading: false,
+            compressing: false,
+            compressionProgress: 0,
         },
         kartu_keluarga: {
             file: initialDocuments.kartu_keluarga || null,
             preview: null,
             error: null,
             uploading: false,
+            compressing: false,
+            compressionProgress: 0,
         },
         ijazah: {
             file: initialDocuments.ijazah || null,
             preview: null,
             error: null,
             uploading: false,
+            compressing: false,
+            compressionProgress: 0,
         },
     })
 
@@ -53,29 +64,94 @@ export default function DocumentUpload({
         if (!file) {
             setFiles((prev) => ({
                 ...prev,
-                [type]: { file: null, preview: null, error: null, uploading: false },
+                [type]: {
+                    file: null,
+                    preview: null,
+                    error: null,
+                    uploading: false,
+                    compressing: false,
+                    compressionProgress: 0,
+                },
             }))
             return
         }
 
-        // Validate file
-        const validation = await validateFile(file)
-
-        if (!validation.valid) {
-            setFiles((prev) => ({
-                ...prev,
-                [type]: { ...prev[type], error: validation.error || 'File tidak valid', uploading: false },
-            }))
-            return
-        }
-
-        // Create preview
-        const preview = URL.createObjectURL(file)
-
+        // Set compressing state
         setFiles((prev) => ({
             ...prev,
-            [type]: { file, preview, error: null, uploading: false },
+            [type]: {
+                ...prev[type],
+                compressing: true,
+                compressionProgress: 0,
+                error: null,
+            },
         }))
+
+        try {
+            // Compress image
+            const compressionResult = await compressImageClient(file, {
+                onProgress: (progress) => {
+                    setFiles((prev) => ({
+                        ...prev,
+                        [type]: {
+                            ...prev[type],
+                            compressionProgress: progress,
+                        },
+                    }))
+                },
+            })
+
+            // Validate compressed file
+            const validation = await validateFile(compressionResult.file)
+
+            if (!validation.valid) {
+                setFiles((prev) => ({
+                    ...prev,
+                    [type]: {
+                        ...prev[type],
+                        error: validation.error || 'File tidak valid',
+                        compressing: false,
+                        compressionProgress: 0,
+                    },
+                }))
+                return
+            }
+
+            // Create preview
+            const preview = URL.createObjectURL(compressionResult.file)
+
+            setFiles((prev) => ({
+                ...prev,
+                [type]: {
+                    file: compressionResult.file,
+                    preview,
+                    error: null,
+                    uploading: false,
+                    compressing: false,
+                    compressionProgress: 100,
+                    originalSize: compressionResult.originalSize,
+                    compressedSize: compressionResult.compressedSize,
+                },
+            }))
+
+            // Log compression stats
+            console.log(`${type} compressed:`, {
+                original: formatFileSize(compressionResult.originalSize),
+                compressed: formatFileSize(compressionResult.compressedSize),
+                saved: `${compressionResult.savedPercentage}%`,
+            })
+        } catch (error) {
+            console.error('Compression error:', error)
+            setFiles((prev) => ({
+                ...prev,
+                [type]: {
+                    ...prev[type],
+                    error: 'Gagal mengkompres file. Silakan coba lagi.',
+                    compressing: false,
+                    compressionProgress: 0,
+                },
+            }))
+        }
     }
 
     const handleDrop = (e: React.DragEvent, type: string) => {
@@ -96,7 +172,14 @@ export default function DocumentUpload({
         }
         setFiles((prev) => ({
             ...prev,
-            [type]: { file: null, preview: null, error: null, uploading: false },
+            [type]: {
+                file: null,
+                preview: null,
+                error: null,
+                uploading: false,
+                compressing: false,
+                compressionProgress: 0,
+            },
         }))
     }
 
@@ -146,9 +229,10 @@ export default function DocumentUpload({
                 </h3>
                 <ul className="text-sm text-yellow-700 space-y-1">
                     <li>✓ Format file: <strong>JPG atau JPEG saja</strong> (PNG dan PDF tidak diterima)</li>
-                    <li>✓ Ukuran maksimal: 2MB per file</li>
+                    <li>✓ Ukuran maksimal: 5MB per file (akan dikompres otomatis)</li>
                     <li>✓ Gambar harus jelas, tidak buram, tidak gelap</li>
                     <li>✓ Pastikan semua teks pada dokumen dapat terbaca</li>
+                    <li>✨ <strong>File akan dikompres otomatis</strong> untuk menghemat penyimpanan</li>
                 </ul>
             </div>
 
@@ -162,7 +246,7 @@ export default function DocumentUpload({
                                 {docType.label} <span className="text-red-500">*</span>
                             </label>
 
-                            {!fileState.file ? (
+                            {!fileState.file && !fileState.compressing ? (
                                 <div
                                     onDrop={(e) => handleDrop(e, docType.value)}
                                     onDragOver={handleDragOver}
@@ -184,9 +268,27 @@ export default function DocumentUpload({
                                             Klik untuk upload atau drag & drop
                                         </p>
                                         <p className="text-sm text-gray-500">
-                                            Format JPG/JPEG, maksimal 2MB
+                                            Format JPG/JPEG, maksimal 5MB
                                         </p>
                                     </label>
+                                </div>
+                            ) : fileState.compressing ? (
+                                <div className="border-2 border-blue-300 rounded-lg p-8 text-center bg-blue-50">
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div>
+                                        <p className="text-base text-blue-700 font-medium mb-2">
+                                            Mengompres gambar...
+                                        </p>
+                                        <div className="w-full max-w-xs bg-blue-200 rounded-full h-2 mb-2">
+                                            <div
+                                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                                style={{ width: `${fileState.compressionProgress}%` }}
+                                            ></div>
+                                        </div>
+                                        <p className="text-sm text-blue-600">
+                                            {Math.round(fileState.compressionProgress)}%
+                                        </p>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="border-2 border-green-500 rounded-lg p-4 bg-green-50">
@@ -203,10 +305,15 @@ export default function DocumentUpload({
                                                 <div>
                                                     <p className="font-semibold text-gray-900 flex items-center gap-2">
                                                         <CheckCircle className="w-5 h-5 text-green-600" />
-                                                        {fileState.file.name}
+                                                        {fileState.file?.name}
                                                     </p>
                                                     <p className="text-sm text-gray-600">
-                                                        {(fileState.file.size / 1024 / 1024).toFixed(2)} MB
+                                                        {formatFileSize(fileState.file?.size || 0)}
+                                                        {fileState.originalSize && fileState.compressedSize && (
+                                                            <span className="ml-2 text-green-700 font-medium">
+                                                                (Hemat {(((fileState.originalSize - fileState.compressedSize) / fileState.originalSize) * 100).toFixed(0)}% dari {formatFileSize(fileState.originalSize)})
+                                                            </span>
+                                                        )}
                                                     </p>
                                                 </div>
                                                 <button

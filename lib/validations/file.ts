@@ -1,4 +1,4 @@
-const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB (client-side compression will reduce to ~1-2MB)
 const MIN_WIDTH = 800
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg']
 
