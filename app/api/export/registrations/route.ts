@@ -42,8 +42,8 @@ export async function GET(request: Request) {
 
         // Prepare data for Excel
         const excelData = registrations.map((reg: any) => {
-            const student = reg.students || {}
-            const parent = reg.parents || {}
+            const student = reg.students?.[0] || {}
+            const parent = reg.parents?.[0] || {}
             const docs = reg.documents || []
 
             // Get file paths

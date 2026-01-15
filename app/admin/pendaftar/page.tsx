@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import { FileDown, Search, Eye, Trash2, Users, CheckCircle, XCircle, Clock, Check, X } from 'lucide-react'
+import { FileDown, Search, Eye, Trash2, Users, CheckCircle, XCircle, Clock, Check, X, Download } from 'lucide-react'
 
 interface Registration {
     id: string
@@ -69,6 +69,7 @@ export default function PendaftarPage() {
     const handleExport = async () => {
         try {
             const response = await fetch('/api/export/registrations')
+            if (!response.ok) throw new Error('Gagal export data')
             const blob = await response.blob()
             const url = window.URL.createObjectURL(blob)
             const a = document.createElement('a')
@@ -83,6 +84,31 @@ export default function PendaftarPage() {
             alert('Gagal export data. Silakan coba lagi.')
         }
     }
+
+    const handleDownload = async (path: string, fileName: string) => {
+        try {
+            const supabase = createClient()
+            const { data, error } = await supabase.storage
+                .from('documents')
+                .download(path)
+
+            if (error) throw error
+
+            const url = window.URL.createObjectURL(data)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = fileName
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+        } catch (error: any) {
+            console.error('Download error:', error)
+            alert(`Gagal download file: ${error.message}`)
+        }
+    }
+
+    const [previewDoc, setPreviewDoc] = useState<{ url: string; title: string } | null>(null)
 
     const handleStatusUpdate = async (id: string, newStatus: string) => {
         setUpdatingId(id)
@@ -288,6 +314,7 @@ export default function PendaftarPage() {
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">No. Pendaftaran</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Nama Lengkap</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base hidden lg:table-cell">NISN</th>
+                                <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Dokumen</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Status</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Tanggal</th>
                                 <th className="text-left py-4 px-4 lg:px-6 font-semibold text-gray-700 text-sm lg:text-base">Aksi</th>
@@ -315,6 +342,31 @@ export default function PendaftarPage() {
                                         </td>
                                         <td className="py-4 px-4 lg:px-6 hidden lg:table-cell text-gray-600">
                                             {reg.nisn}
+                                        </td>
+                                        <td className="py-4 px-4 lg:px-6">
+                                            <div className="flex gap-2">
+                                                {['kartu_keluarga', 'ijazah', 'ktp'].map(type => {
+                                                    const doc = reg.documents?.find((d: any) => d.document_type === type)
+                                                    const label = type === 'kartu_keluarga' ? 'KK' : type === 'ijazah' ? 'IJZ' : 'KTP'
+
+                                                    if (!doc) return (
+                                                        <span key={type} className="w-8 h-8 flex items-center justify-center rounded bg-gray-100 text-[10px] text-gray-400 font-bold" title={`${label} belum ada`}>
+                                                            {label}
+                                                        </span>
+                                                    )
+
+                                                    return (
+                                                        <button
+                                                            key={type}
+                                                            onClick={() => setPreviewDoc({ url: doc.file_url, title: label })}
+                                                            className="w-8 h-8 flex items-center justify-center rounded bg-green-50 text-green-600 border border-green-200 text-[10px] font-bold hover:bg-green-600 hover:text-white transition-colors"
+                                                            title={`Lihat ${label}`}
+                                                        >
+                                                            {label}
+                                                        </button>
+                                                    )
+                                                })}
+                                            </div>
                                         </td>
                                         <td className="py-4 px-4 lg:px-6">
                                             {getStatusBadge(reg.status)}
@@ -452,14 +504,20 @@ export default function PendaftarPage() {
                                                     {type.replace('_', ' ')}
                                                 </p>
                                                 {doc ? (
-                                                    <a
-                                                        href={doc.file_url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-sm text-green-600 font-medium hover:underline flex items-center gap-2"
-                                                    >
-                                                        <Eye className="w-4 h-4" /> Buka File
-                                                    </a>
+                                                    <div className="flex flex-col gap-2">
+                                                        <button
+                                                            onClick={() => setPreviewDoc({ url: doc.file_url, title: type.replace('_', ' ') })}
+                                                            className="text-sm text-green-600 font-medium hover:underline flex items-center gap-2"
+                                                        >
+                                                            <Eye className="w-4 h-4" /> Buka Preview
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDownload(doc.file_path, `${selectedReg.registration_number}-${type}.jpg`)}
+                                                            className="text-sm text-blue-600 font-medium hover:underline flex items-center gap-2"
+                                                        >
+                                                            <Download className="w-4 h-4" /> Download
+                                                        </button>
+                                                    </div>
                                                 ) : (
                                                     <span className="text-sm text-gray-400 italic">Belum diupload</span>
                                                 )}
@@ -498,6 +556,39 @@ export default function PendaftarPage() {
                             )}
                         </div>
                     </Card>
+                </div>
+            )}
+
+            {/* Preview Document Modal */}
+            {previewDoc && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    onClick={() => setPreviewDoc(null)}
+                >
+                    <div
+                        className="relative w-full max-w-2xl bg-white rounded-2xl overflow-hidden shadow-2xl"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="p-4 border-b flex items-center justify-between">
+                            <h3 className="font-bold text-gray-900 uppercase tracking-wider">{previewDoc.title}</h3>
+                            <button
+                                onClick={() => setPreviewDoc(null)}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-2 bg-gray-100 flex items-center justify-center min-h-[300px] max-h-[70vh] overflow-auto">
+                            <img
+                                src={previewDoc.url}
+                                alt={previewDoc.title}
+                                className="max-w-full h-auto rounded shadow-lg"
+                            />
+                        </div>
+                        <div className="p-4 bg-gray-50 border-t flex justify-end">
+                            <Button onClick={() => setPreviewDoc(null)}>Tutup Preview</Button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
