@@ -19,34 +19,32 @@ export const metadata: Metadata = {
   description: 'Pendaftaran Peserta Didik Baru (PPDB) SMP Terpadu Al-Ittihadiyah Tahun Ajaran 2026/2027. Daftar sekarang dengan mudah dan cepat!',
   keywords: 'PPDB, Pendaftaran, SMP Al-Ittihadiyah, Sekolah Islam, Pendidikan',
   icons: {
-    icon: [
-      { url: '/favicon.png' },
-      { url: '/logo.png' }
-    ],
-    apple: '/logo.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon-180x180.png"
   },
   openGraph: {
-    title: 'PPDB SMP Terpadu Al-Ittihadiyah 2026/2027',
-    description: 'Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor. Unggul dalam Prestasi, Berakhlak Mulia, Berjiwa Pemimpin.',
+    title: "PPDB SMP Terpadu Al-Ittihadiyah 2026/2027",
+    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor",
     url: 'https://ppdb-smp-al-ittihadiyah.vercel.app',
     siteName: 'PPDB SMP Terpadu Al-Ittihadiyah',
     images: [
       {
-        url: '/og-ppdb-hero.png',
+        url: "/og-ppdb-hero.png",
         width: 1200,
         height: 630,
-        alt: 'PPDB SMP Terpadu Al-Ittihadiyah',
-      },
+        alt: "PPDB SMP Terpadu Al-Ittihadiyah"
+      }
     ],
+    type: "website",
     locale: 'id_ID',
-    type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'PPDB SMP Terpadu Al-Ittihadiyah 2026/2027',
-    description: 'Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor.',
-    images: ['/og-ppdb-hero.png'],
-  },
+    card: "summary_large_image",
+    title: "PPDB SMP Terpadu Al-Ittihadiyah 2026/2027",
+    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor",
+    images: ["/og-ppdb-hero.png"]
+  }
 }
 
 export default function RootLayout({
