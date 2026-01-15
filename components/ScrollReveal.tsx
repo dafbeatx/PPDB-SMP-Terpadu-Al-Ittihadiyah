@@ -19,7 +19,7 @@ export default function ScrollReveal({
     delay = 0,
     duration = 0.6,
     className = '',
-    distance = 30,
+    distance = 20,
     once = true,
 }: ScrollRevealProps) {
     const directions = {

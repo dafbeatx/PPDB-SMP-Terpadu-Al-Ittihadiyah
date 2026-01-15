@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { FileText, Upload, CheckCircle, UserCheck } from 'lucide-react'
 import { getContentMap } from '@/lib/content'
+import Card from '@/components/ui/Card'
 import ScrollReveal from '@/components/ScrollReveal'
 
 export default async function AlurPPDB() {
@@ -63,31 +64,27 @@ export default async function AlurPPDB() {
                                 <ScrollReveal
                                     key={index}
                                     direction="up"
-                                    delay={index * 0.15}
+                                    delay={index * 0.1}
+                                    distance={20}
                                 >
-                                    <div className="relative">
-                                        <div className="text-center group">
-                                            <div className="relative inline-block mb-6">
-                                                <div className="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-0 mx-auto group-hover:scale-110 transition-transform shadow-lg shadow-green-100">
-                                                    {step.number}
-                                                </div>
-                                                {!isLast && (
-                                                    <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-green-100 -translate-x-8"></div>
-                                                )}
+                                    <Card className="p-8 text-center h-full group hover:shadow-xl transition-all duration-300 border-none bg-green-50/30">
+                                        <div className="relative inline-block mb-6">
+                                            <div className="bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold mb-0 mx-auto group-hover:scale-110 transition-transform shadow-lg shadow-green-100">
+                                                {step.number}
                                             </div>
-
-                                            <div className="bg-green-50 w-20 h-20 rounded-2xl mb-4 mx-auto flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                                                <Icon className="w-10 h-10 text-green-600 group-hover:scale-110 transition-transform" />
-                                            </div>
-
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                                {step.title}
-                                            </h3>
-                                            <p className="text-gray-600 leading-relaxed text-sm">
-                                                {step.description}
-                                            </p>
                                         </div>
-                                    </div>
+
+                                        <div className="bg-white w-20 h-20 rounded-2xl mb-6 mx-auto flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                                            <Icon className="w-10 h-10 text-green-600" />
+                                        </div>
+
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3">
+                                            {step.title}
+                                        </h3>
+                                        <p className="text-gray-600 leading-relaxed text-sm">
+                                            {step.description}
+                                        </p>
+                                    </Card>
                                 </ScrollReveal>
                             )
                         })}
