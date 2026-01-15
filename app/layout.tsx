@@ -57,7 +57,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <Navbar />
 
-        {children}
+        <main className="pt-16 md:pt-20">
+          {children}
+        </main>
+
         <FloatingFAQBot />
         <Footer />
       </body>
