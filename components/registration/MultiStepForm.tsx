@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import StudentForm from './StudentForm'
 import ParentForm from './ParentForm'
 import DocumentUpload from './DocumentUpload'
@@ -21,6 +21,29 @@ export default function MultiStepForm() {
     const [documents, setDocuments] = useState<DocumentData>({})
     const [registrationId, setRegistrationId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // Auto scroll to top on step change
+    useEffect(() => {
+        // Blur active element to close mobile keyboard if open
+        if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur()
+        }
+
+        // Small timeout to ensure DOM is updated and keyboard is closing
+        const timer = setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+
+            // Focus the title for accessibility
+            const title = containerRef.current?.querySelector('h2')
+            if (title instanceof HTMLElement) {
+                title.tabIndex = -1 // Make it focusable via script
+                title.focus({ preventScroll: true })
+            }
+        }, 100)
+
+        return () => clearTimeout(timer)
+    }, [currentStep])
 
     const totalSteps = 3
 
@@ -99,7 +122,7 @@ export default function MultiStepForm() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto" ref={containerRef}>
             <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
 
             <div className="mt-8">
