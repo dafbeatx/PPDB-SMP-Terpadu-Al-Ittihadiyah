@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { GraduationCap, Menu, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 const NAV_LINKS = [
     { name: 'Beranda', href: '/#hero' },
@@ -67,10 +68,13 @@ export default function Navbar() {
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 md:gap-3 group">
                         <div className="relative overflow-hidden rounded-lg">
-                            <img
+                            <Image
                                 src="/logo.png"
                                 alt="Logo SMP Al-Ittihadiyah"
+                                width={48}
+                                height={48}
                                 className="w-10 h-10 md:w-12 md:h-12 object-contain transition-transform duration-500 group-hover:scale-110"
+                                priority
                             />
                         </div>
                         <div className="hidden sm:block">

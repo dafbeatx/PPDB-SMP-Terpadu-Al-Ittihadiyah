@@ -23,8 +23,6 @@ export default async function Hero() {
         <section id="hero" className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white pt-28 pb-20 md:py-32 overflow-hidden">
             <ParallaxHeroBg />
 
-            <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 z-[1]"></div>
-
             <div className="container mx-auto px-4 relative z-10">
                 <ScrollReveal direction="up" distance={40}>
                     <div className="max-w-4xl mx-auto text-center">
@@ -36,6 +34,7 @@ export default async function Hero() {
                                     width={80}
                                     height={80}
                                     className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                                    priority
                                 />
                             </div>
                         </div>
