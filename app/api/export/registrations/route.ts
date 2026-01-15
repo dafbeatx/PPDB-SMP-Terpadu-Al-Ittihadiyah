@@ -92,6 +92,7 @@ export async function GET(request: Request) {
                 'File KTP': ktpDoc?.file_path || '-',
                 'File KK': kkDoc?.file_path || '-',
                 'File Ijazah': ijazahDoc?.file_path || '-',
+                'Link Download ZIP (Semua Dokumen)': `${process.env.NEXT_PUBLIC_APP_URL || ''}/api/admin/registrations/${reg.id}/zip`
             }
         })
 
@@ -120,6 +121,7 @@ export async function GET(request: Request) {
             { wch: 40 }, // File KTP
             { wch: 40 }, // File KK
             { wch: 40 }, // File Ijazah
+            { wch: 60 }, // Link Download ZIP
         ]
         ws['!cols'] = colWidths
 
