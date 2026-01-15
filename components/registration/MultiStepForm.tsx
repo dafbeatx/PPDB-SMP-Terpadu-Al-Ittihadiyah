@@ -203,19 +203,15 @@ export default function MultiStepForm() {
 
     return (
         <div className="max-w-4xl mx-auto" ref={containerRef}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 px-1">
-                <StepIndicator currentStep={currentStep} totalSteps={totalSteps} className="flex-1 mb-0" />
-                <div className="hidden sm:block">
-                    <AutosaveIndicator isSaving={isSaving} />
-                </div>
-            </div>
-
-            {/* Mobile Autosave Indicator */}
-            <div className="sm:hidden -mt-4 mb-6 px-1 flex justify-center">
-                <AutosaveIndicator isSaving={isSaving} />
+            <div className="mb-10 md:mb-12">
+                <StepIndicator currentStep={currentStep} totalSteps={totalSteps} className="mb-0" />
             </div>
 
             <div className="mt-8 relative">
+                {/* Autosave Indicator - Contextual positioning below stepper/above form */}
+                <div className="flex justify-center sm:justify-end mb-4 px-1">
+                    <AutosaveIndicator isSaving={isSaving} />
+                </div>
                 {/* Secondary subtle indicator below step titles would be inside form components, 
                     but we can also place it here if we want it global. 
                     The user asked for 'ATAU di bawah judul step'. 

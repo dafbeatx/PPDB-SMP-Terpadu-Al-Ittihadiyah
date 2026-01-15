@@ -66,7 +66,7 @@ export default function StepIndicator({ currentStep, totalSteps, className = '' 
 
             {/* Mobile View */}
             <div className="sm:hidden">
-                <div className="flex items-center justify-center gap-1 mb-3">
+                <div className="flex items-center justify-center gap-0.5 mb-4">
                     {steps.map((step) => {
                         const isActive = step.number === currentStep
                         const isCompleted = step.number < currentStep
@@ -74,17 +74,21 @@ export default function StepIndicator({ currentStep, totalSteps, className = '' 
                         return (
                             <div key={step.number} className="flex items-center">
                                 <div className={`
-                                    w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                                    w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs
                                     transition-all duration-300
                                     ${isCompleted ? 'bg-green-600 text-white' : ''}
-                                    ${isActive ? 'bg-blue-600 text-white ring-4 ring-blue-100' : ''}
+                                    ${isActive ? 'bg-blue-600 text-white ring-2 ring-blue-100' : ''}
                                     ${!isActive && !isCompleted ? 'bg-white border-2 border-gray-300 text-gray-500' : ''}
                                 `}>
-                                    {isCompleted ? '✓' : step.number}
+                                    {isCompleted ? (
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    ) : step.number}
                                 </div>
                                 {step.number < totalSteps && (
                                     <div className={`
-                                        w-6 h-0.5 mx-0.5
+                                        w-4 h-0.5 mx-0.5 rounded-full
                                         ${step.number < currentStep ? 'bg-green-600' : 'bg-gray-200'}
                                     `}></div>
                                 )}
@@ -93,11 +97,11 @@ export default function StepIndicator({ currentStep, totalSteps, className = '' 
                     })}
                 </div>
 
-                {/* Current Step Label for Mobile */}
-                <div className="text-center">
-                    <span className="text-sm font-semibold text-blue-600">
-                        {steps[currentStep - 1].label}
-                    </span>
+                {/* Current Step Label for Mobile - Professional Badge Style */}
+                <div className="flex justify-center">
+                    <div className="bg-blue-50 text-blue-700 px-4 py-1 rounded-full text-xs font-bold border border-blue-100 uppercase tracking-wider">
+                        Step {currentStep}: {steps[currentStep - 1].label}
+                    </div>
                 </div>
             </div>
         </div>
