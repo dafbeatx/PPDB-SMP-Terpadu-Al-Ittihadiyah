@@ -30,7 +30,25 @@ export default function FloatingFAQBot() {
         { type: 'bot', content: 'Halo! Ada yang bisa kami bantu terkait pendaftaran (PPDB)?' }
     ])
     const [showScrollTop, setShowScrollTop] = useState(false)
+    const [isInputFocused, setIsInputFocused] = useState(false)
     const chatContainerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleFocus = (e: FocusEvent) => {
+            const target = e.target as HTMLElement
+            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+                setIsInputFocused(true)
+            }
+        }
+        const handleBlur = () => setIsInputFocused(false)
+
+        window.addEventListener('focusin', handleFocus)
+        window.addEventListener('focusout', handleBlur)
+        return () => {
+            window.removeEventListener('focusin', handleFocus)
+            window.removeEventListener('focusout', handleBlur)
+        }
+    }, [])
 
     // Auto-scroll to bottom of chat area only
     useEffect(() => {
@@ -66,6 +84,8 @@ export default function FloatingFAQBot() {
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+
+    if (isInputFocused && typeof window !== 'undefined' && window.innerWidth < 768) return null
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 md:gap-4 sm:bottom-6 bottom-20">
@@ -158,8 +178,8 @@ export default function FloatingFAQBot() {
                                                 disabled={isTyping}
                                                 onClick={() => handleQuestionClick(item.q, item.a)}
                                                 className={`text-[11px] px-3 py-2 rounded-xl border transition-all text-left leading-snug ${isTyping
-                                                        ? 'bg-gray-50 text-gray-400 border-gray-100'
-                                                        : 'bg-white hover:bg-green-50 hover:text-green-700 hover:border-green-200 text-gray-600 border-gray-200 shadow-sm active:scale-95'
+                                                    ? 'bg-gray-50 text-gray-400 border-gray-100'
+                                                    : 'bg-white hover:bg-green-50 hover:text-green-700 hover:border-green-200 text-gray-600 border-gray-200 shadow-sm active:scale-95'
                                                     }`}
                                             >
                                                 {item.q}

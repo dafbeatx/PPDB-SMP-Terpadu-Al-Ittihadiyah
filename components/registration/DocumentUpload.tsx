@@ -214,11 +214,11 @@ export default function DocumentUpload({
     }
 
     return (
-        <Card className="p-6 md:p-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <Card className="p-5 md:p-8">
+            <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">
                 Upload Dokumen
             </h2>
-            <p className="text-gray-600 mb-2">
+            <p className="text-sm md:text-lg text-gray-600 mb-4 md:mb-6">
                 Upload dokumen yang diperlukan dalam format JPG/JPEG.
             </p>
 
@@ -236,7 +236,7 @@ export default function DocumentUpload({
                 </ul>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-32 md:pb-0">
                 {DOCUMENT_TYPES.map((docType) => {
                     const fileState = files[docType.value]
 
