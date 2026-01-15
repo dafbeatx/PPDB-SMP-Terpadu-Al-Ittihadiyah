@@ -75,7 +75,7 @@ export default function ParentForm({ onSubmit, onBack, initialData }: ParentForm
                 Lengkapi data orang tua atau wali yang bertanggung jawab. Semua field bertanda * wajib diisi.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-32 md:pb-0">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-10 md:pb-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Input
                         label="Nama Ayah"

@@ -236,7 +236,7 @@ export default function DocumentUpload({
                 </ul>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-32 md:pb-0">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-10 md:pb-0">
                 {DOCUMENT_TYPES.map((docType) => {
                     const fileState = files[docType.value]
 

@@ -62,7 +62,7 @@ export default function StudentForm({ onSubmit, initialData }: StudentFormProps)
                 Lengkapi data calon siswa dengan benar. Semua field bertanda * wajib diisi.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-32 md:pb-0">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 pb-10 md:pb-0">
                 <Input
                     label="Nama Lengkap"
                     type="text"

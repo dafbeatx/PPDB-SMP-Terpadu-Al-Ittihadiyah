@@ -2,20 +2,23 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { GraduationCap, Menu, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
-    { name: 'Beranda', href: '#hero' },
-    { name: 'Profil', href: '#profil' },
-    { name: 'Visi & Misi', href: '#visi-misi' },
-    { name: 'Keunggulan', href: '#keunggulan' },
-    { name: 'Testimoni', href: '#testimoni' },
-    { name: 'Alur', href: '#alur' },
+    { name: 'Beranda', href: '/#hero' },
+    { name: 'Profil', href: '/#profil' },
+    { name: 'Visi & Misi', href: '/#visi-misi' },
+    { name: 'Keunggulan', href: '/#keunggulan' },
+    { name: 'Testimoni', href: '/#testimoni' },
+    { name: 'Alur', href: '/#alur' },
 ]
 
 export default function Navbar() {
+    const pathname = usePathname()
+    const isDaftarPage = pathname === '/daftar'
     const [activeSection, setActiveSection] = useState('hero')
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -101,11 +104,13 @@ export default function Navbar() {
                                 Login
                             </Button>
                         </Link>
-                        <Link href="/daftar">
-                            <Button size="sm" className="shadow-lg shadow-green-600/20 font-bold px-5">
-                                Daftar
-                            </Button>
-                        </Link>
+                        {!isDaftarPage && (
+                            <Link href="/daftar">
+                                <Button size="sm" className="shadow-lg shadow-green-600/20 font-bold px-5">
+                                    Daftar
+                                </Button>
+                            </Link>
+                        )}
 
                         {/* Mobile Menu Toggle */}
                         <button
