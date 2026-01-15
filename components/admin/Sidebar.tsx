@@ -50,7 +50,7 @@ export default function AdminSidebar() {
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-900 text-white rounded-lg shadow-lg"
+                className="lg:hidden fixed top-24 left-4 z-50 p-2 bg-gray-900 text-white rounded-lg shadow-lg transition-all"
             >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -65,8 +65,8 @@ export default function AdminSidebar() {
 
             {/* Sidebar */}
             <aside className={`
-        fixed lg:static
-        w-64 bg-gray-900 text-white min-h-screen flex flex-col
+        fixed lg:static top-20 lg:top-0
+        w-64 bg-gray-900 text-white min-h-[calc(100vh-5rem)] lg:min-h-screen flex flex-col
         transition-transform duration-300 z-40
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
