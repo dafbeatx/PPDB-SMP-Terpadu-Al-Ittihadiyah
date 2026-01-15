@@ -6,6 +6,7 @@ import ParentForm from './ParentForm'
 import AdditionalDataForm from './AdditionalDataForm'
 import DocumentUpload from './DocumentUpload'
 import StepIndicator from './StepIndicator'
+import AutosaveIndicator from './AutosaveIndicator'
 import { Save } from 'lucide-react'
 import type { StudentFormData } from '@/lib/validations/student'
 import type { ParentFormData } from '@/lib/validations/parent'
@@ -55,6 +56,7 @@ export default function MultiStepForm() {
     const [documents, setDocuments] = useState<DocumentData>({})
     const [registrationId, setRegistrationId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -78,12 +80,18 @@ export default function MultiStepForm() {
     useEffect(() => {
         if (!isLoaded) return
 
-        const dataToSave = {
-            step: currentStep,
-            student: studentData,
-            parent: parentData,
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+        setIsSaving(true)
+        const timer = setTimeout(() => {
+            const dataToSave = {
+                step: currentStep,
+                student: studentData,
+                parent: parentData,
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+            setIsSaving(false)
+        }, 800) // Debounce for visual feedback
+
+        return () => clearTimeout(timer)
     }, [currentStep, studentData, parentData, isLoaded])
 
     // Auto scroll to top on step change
@@ -195,15 +203,24 @@ export default function MultiStepForm() {
 
     return (
         <div className="max-w-4xl mx-auto" ref={containerRef}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 px-1">
                 <StepIndicator currentStep={currentStep} totalSteps={totalSteps} className="flex-1 mb-0" />
-                <div className="flex items-center gap-2 text-xs font-medium text-gray-400 bg-white/50 px-3 py-1.5 rounded-full border border-gray-100 self-center sm:self-auto">
-                    <Save className="w-3 h-3" />
-                    <span>Data disimpan otomatis</span>
+                <div className="hidden sm:block">
+                    <AutosaveIndicator isSaving={isSaving} />
                 </div>
             </div>
 
-            <div className="mt-8">
+            {/* Mobile Autosave Indicator */}
+            <div className="sm:hidden -mt-4 mb-6 px-1 flex justify-center">
+                <AutosaveIndicator isSaving={isSaving} />
+            </div>
+
+            <div className="mt-8 relative">
+                {/* Secondary subtle indicator below step titles would be inside form components, 
+                    but we can also place it here if we want it global. 
+                    The user asked for 'ATAU di bawah judul step'. 
+                    Let's keep it in the header for now as it's cleaner. */}
+
                 {currentStep === 1 && (
                     <StudentForm
                         onSubmit={handleStudentSubmit}
