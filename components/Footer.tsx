@@ -7,7 +7,7 @@ export default async function Footer() {
     const footer = await getContentMap('footer')
 
     const address = footer['footer.address'] || 'Kp. Pasar Selasa RT 03/01, Desa Ciampea Udik, Kecamatan Ciampea, Kabupaten Bogor, Jawa Barat 16620, Indonesia.'
-    const phone = footer['footer.phone'] || '(+62) 895-3512-51395'
+    const phone = footer['footer.phone'] || '+62 81802107009'
     const email = footer['footer.email'] || 'smptalittihadiyah@gmail.com'
 
     // Sanitize phone for WhatsApp link

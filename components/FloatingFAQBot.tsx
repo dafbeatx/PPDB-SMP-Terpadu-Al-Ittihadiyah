@@ -190,7 +190,7 @@ export default function FloatingFAQBot() {
 
                                 <div className="mt-4">
                                     <a
-                                        href="https://wa.me/628123456789"
+                                        href="https://wa.me/6281802107009"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all text-xs sm:text-sm shadow-md shadow-green-100 active:scale-95"
