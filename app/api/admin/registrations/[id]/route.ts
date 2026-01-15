@@ -15,7 +15,7 @@ export async function PATCH(
         const cookieStore = await cookies()
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
             {
                 cookies: {
                     getAll() {
@@ -27,18 +27,32 @@ export async function PATCH(
 
         const { error } = await supabase
             .from('registrations')
-            .update({ status })
+            .update({ status: status as any })
             .eq('id', id)
 
         if (error) {
-            console.error('Update status error:', error)
-            return NextResponse.json({ error: error.message }, { status: 500 })
+            console.error('Update status error detail:', {
+                id,
+                status,
+                error,
+                code: error.code,
+                message: error.message,
+                hint: error.hint
+            })
+            return NextResponse.json({
+                error: 'Gagal memperbarui status di database',
+                details: error.message,
+                code: error.code
+            }, { status: 500 })
         }
 
         return NextResponse.json({ success: true })
     } catch (error: any) {
         console.error('Update status unexpected error:', error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({
+            error: 'Terjadi kesalahan sistem',
+            details: error.message
+        }, { status: 500 })
     }
 }
 

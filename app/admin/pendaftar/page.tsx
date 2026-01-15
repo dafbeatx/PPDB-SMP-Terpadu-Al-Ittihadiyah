@@ -26,6 +26,7 @@ export default function PendaftarPage() {
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [filterStatus, setFilterStatus] = useState<string>('all')
+    const [updatingId, setUpdatingId] = useState<string | null>(null)
 
     useEffect(() => {
         fetchRegistrations()
@@ -82,6 +83,7 @@ export default function PendaftarPage() {
     }
 
     const handleStatusUpdate = async (id: string, newStatus: string) => {
+        setUpdatingId(id)
         try {
             const response = await fetch(`/api/admin/registrations/${id}`, {
                 method: 'PATCH',
@@ -89,15 +91,21 @@ export default function PendaftarPage() {
                 body: JSON.stringify({ status: newStatus }),
             })
 
-            if (!response.ok) throw new Error('Gagal update status')
+            const result = await response.json()
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Gagal update status')
+            }
 
             // Update local state
             setRegistrations(prev => prev.map(reg =>
                 reg.id === id ? { ...reg, status: newStatus } : reg
             ))
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating status:', error)
-            alert('Gagal memperbarui status. Silakan coba lagi.')
+            alert(`Gagal memperbarui status: ${error.message}`)
+        } finally {
+            setUpdatingId(null)
         }
     }
 
@@ -140,7 +148,7 @@ export default function PendaftarPage() {
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case 'approved':
+            case 'accepted':
                 return (
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                         <CheckCircle className="w-4 h-4" />
@@ -167,7 +175,7 @@ export default function PendaftarPage() {
     const stats = {
         total: registrations.length,
         pending: registrations.filter(r => r.status === 'pending').length,
-        approved: registrations.filter(r => r.status === 'approved').length,
+        approved: registrations.filter(r => r.status === 'accepted').length,
         rejected: registrations.filter(r => r.status === 'rejected').length,
     }
 
@@ -258,7 +266,7 @@ export default function PendaftarPage() {
                         >
                             <option value="all">Semua Status</option>
                             <option value="pending">Menunggu</option>
-                            <option value="approved">Diterima</option>
+                            <option value="accepted">Diterima</option>
                             <option value="rejected">Ditolak</option>
                         </select>
                         <Button onClick={handleExport} className="gap-2">
@@ -319,20 +327,20 @@ export default function PendaftarPage() {
                                         <td className="py-4 px-4 lg:px-6">
                                             <div className="flex gap-1 lg:gap-2">
                                                 <button
-                                                    onClick={() => handleStatusUpdate(reg.id, 'approved')}
-                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200"
+                                                    onClick={() => handleStatusUpdate(reg.id, 'accepted')}
+                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200 disabled:opacity-50"
                                                     title="Terima Pendaftaran"
-                                                    disabled={reg.status === 'approved'}
+                                                    disabled={reg.status === 'accepted' || updatingId === reg.id}
                                                 >
-                                                    <Check className="w-4 h-4" />
+                                                    {updatingId === reg.id ? <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
                                                 </button>
                                                 <button
                                                     onClick={() => handleStatusUpdate(reg.id, 'rejected')}
-                                                    className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors border border-transparent hover:border-orange-200"
+                                                    className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors border border-transparent hover:border-orange-200 disabled:opacity-50"
                                                     title="Tolak Pendaftaran"
-                                                    disabled={reg.status === 'rejected'}
+                                                    disabled={reg.status === 'rejected' || updatingId === reg.id}
                                                 >
-                                                    <X className="w-4 h-4" />
+                                                    {updatingId === reg.id ? <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin" /> : <X className="w-4 h-4" />}
                                                 </button>
                                                 <div className="w-px h-6 bg-gray-200 mx-1 hidden lg:block" />
                                                 <button
