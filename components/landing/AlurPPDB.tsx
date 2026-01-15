@@ -40,12 +40,12 @@ export default async function AlurPPDB() {
     ]
 
     return (
-        <section id="alur" className="py-16 md:py-24 bg-white overflow-hidden">
+        <section id="alur" className="py-16 lg:py-20 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                     <ScrollReveal direction="up">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                                 {title}
                             </h2>
                             <p className="text-lg text-gray-600 mb-8">
@@ -54,7 +54,7 @@ export default async function AlurPPDB() {
                         </div>
                     </ScrollReveal>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4 xl:gap-8 mb-16">
                         {steps.map((step, index) => {
                             const Icon = step.icon
                             const isLast = index === steps.length - 1
@@ -67,17 +67,17 @@ export default async function AlurPPDB() {
                                 >
                                     <div className="relative">
                                         <div className="text-center group">
-                                            <div className="relative inline-block mb-4">
-                                                <div className="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-2 mx-auto group-hover:scale-110 transition-transform">
+                                            <div className="relative inline-block mb-6">
+                                                <div className="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-0 mx-auto group-hover:scale-110 transition-transform shadow-lg shadow-green-100">
                                                     {step.number}
                                                 </div>
                                                 {!isLast && (
-                                                    <div className="hidden lg:block absolute top-8 left-full w-24 h-0.5 bg-green-200"></div>
+                                                    <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-green-100 -translate-x-8"></div>
                                                 )}
                                             </div>
 
-                                            <div className="bg-green-50 p-4 rounded-lg mb-3 group-hover:bg-green-100 transition-colors">
-                                                <Icon className="w-10 h-10 text-green-600 mx-auto group-hover:scale-110 transition-transform" />
+                                            <div className="bg-green-50 w-20 h-20 rounded-2xl mb-4 mx-auto flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                                                <Icon className="w-10 h-10 text-green-600 group-hover:scale-110 transition-transform" />
                                             </div>
 
                                             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -94,11 +94,11 @@ export default async function AlurPPDB() {
                     </div>
 
                     <ScrollReveal direction="up" delay={0.4}>
-                        <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 md:p-12 border border-green-100 shadow-sm md:hover:shadow-md transition-shadow">
-                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                        <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 md:p-12 lg:p-16 border border-green-100 shadow-sm md:hover:shadow-md transition-shadow max-w-5xl mx-auto">
+                            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                                 {ctaTitle}
                             </h3>
-                            <p className="text-gray-600 mb-8 text-lg max-w-2xl mx-auto">
+                            <p className="text-gray-600 mb-10 text-lg lg:text-xl max-w-2xl mx-auto">
                                 {ctaText}
                             </p>
                             <Link href="/daftar">

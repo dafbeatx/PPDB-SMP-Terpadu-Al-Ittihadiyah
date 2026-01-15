@@ -36,9 +36,9 @@ export default async function Keunggulan() {
     ]
 
     return (
-        <section id="keunggulan" className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden">
+        <section id="keunggulan" className="py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden">
             <div className="container mx-auto px-4">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                     <ScrollReveal direction="up">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
