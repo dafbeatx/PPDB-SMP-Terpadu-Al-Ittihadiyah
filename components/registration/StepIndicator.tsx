@@ -1,6 +1,7 @@
 interface StepIndicatorProps {
     currentStep: number
     totalSteps: number
+    className?: string
 }
 
 const steps = [
@@ -10,9 +11,9 @@ const steps = [
     { number: 4, label: 'Upload Dokumen' },
 ]
 
-export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
+export default function StepIndicator({ currentStep, totalSteps, className = '' }: StepIndicatorProps) {
     return (
-        <div className="w-full mb-8">
+        <div className={`w-full mb-8 ${className}`}>
             {/* Desktop and Tablet View */}
             <div className="hidden sm:block">
                 <div className="flex items-start justify-between relative">

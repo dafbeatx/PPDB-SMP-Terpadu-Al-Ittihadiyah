@@ -6,6 +6,7 @@ import ParentForm from './ParentForm'
 import AdditionalDataForm from './AdditionalDataForm'
 import DocumentUpload from './DocumentUpload'
 import StepIndicator from './StepIndicator'
+import { Save } from 'lucide-react'
 import type { StudentFormData } from '@/lib/validations/student'
 import type { ParentFormData } from '@/lib/validations/parent'
 
@@ -15,15 +16,75 @@ export interface DocumentData {
     ijazah?: File
 }
 
+const STORAGE_KEY = 'ppdb_form_draft'
+
 export default function MultiStepForm() {
     const [currentStep, setCurrentStep] = useState(1)
-    const [studentData, setStudentData] = useState<StudentFormData | null>(null)
-    const [additionalData, setAdditionalData] = useState<Partial<StudentFormData> | null>(null)
-    const [parentData, setParentData] = useState<ParentFormData | null>(null)
+    const [studentData, setStudentData] = useState<StudentFormData>({
+        full_name: '',
+        nik_siswa: '',
+        nisn: '',
+        birth_place: '',
+        birth_date: '',
+        gender: 'Laki-laki',
+        agama: '',
+        anak_ke: 1,
+        address: '',
+        desa: '',
+        kecamatan: '',
+        kabupaten: '',
+        previous_school: '',
+        tahun_lulus: '',
+        phone_number: '',
+        prestasi: '',
+        hafalan_quran: '',
+        tinggal_dengan: '',
+    })
+    const [parentData, setParentData] = useState<ParentFormData>({
+        father_name: '',
+        father_occupation: '',
+        pendidikan_ayah: '',
+        mother_name: '',
+        mother_occupation: '',
+        pendidikan_ibu: '',
+        phone_number: '',
+        address: '',
+        nama_wali: '',
+        hubungan_wali: '',
+    })
     const [documents, setDocuments] = useState<DocumentData>({})
     const [registrationId, setRegistrationId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
+
+    // Load data from localStorage on mount
+    useEffect(() => {
+        const savedData = localStorage.getItem(STORAGE_KEY)
+        if (savedData) {
+            try {
+                const { step, student, parent } = JSON.parse(savedData)
+                if (step) setCurrentStep(step)
+                if (student) setStudentData(student)
+                if (parent) setParentData(parent)
+            } catch (error) {
+                console.error('Failed to load form draft:', error)
+            }
+        }
+        setIsLoaded(true)
+    }, [])
+
+    // Save data to localStorage whenever it changes
+    useEffect(() => {
+        if (!isLoaded) return
+
+        const dataToSave = {
+            step: currentStep,
+            student: studentData,
+            parent: parentData,
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+    }, [currentStep, studentData, parentData, isLoaded])
 
     // Auto scroll to top on step change
     useEffect(() => {
@@ -57,7 +118,7 @@ export default function MultiStepForm() {
     }
 
     const handleAdditionalDataSubmit = (data: Partial<StudentFormData>) => {
-        setAdditionalData(data)
+        setStudentData(prev => ({ ...prev, ...data }))
         setCurrentStep(4)
     }
 
@@ -69,17 +130,11 @@ export default function MultiStepForm() {
             let currentRegId = registrationId
 
             if (!currentRegId) {
-                // Merge student data and additional data
-                const fullStudentData = {
-                    ...studentData,
-                    ...additionalData
-                }
-
                 const registrationResponse = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        student: fullStudentData,
+                        student: studentData,
                         parent: parentData,
                     }),
                 })
@@ -113,6 +168,8 @@ export default function MultiStepForm() {
                 }
             }
 
+            // Clear local storage on success
+            localStorage.removeItem(STORAGE_KEY)
             window.location.href = `/daftar/konfirmasi?id=${currentRegId}`
         } catch (error: any) {
             console.error('Error submitting registration:', error)
@@ -128,15 +185,30 @@ export default function MultiStepForm() {
         }
     }
 
+    if (!isLoaded) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            </div>
+        )
+    }
+
     return (
         <div className="max-w-4xl mx-auto" ref={containerRef}>
-            <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-1">
+                <StepIndicator currentStep={currentStep} totalSteps={totalSteps} className="flex-1 mb-0" />
+                <div className="flex items-center gap-2 text-xs font-medium text-gray-400 bg-white/50 px-3 py-1.5 rounded-full border border-gray-100 self-center sm:self-auto">
+                    <Save className="w-3 h-3" />
+                    <span>Data disimpan otomatis</span>
+                </div>
+            </div>
 
             <div className="mt-8">
                 {currentStep === 1 && (
                     <StudentForm
                         onSubmit={handleStudentSubmit}
                         initialData={studentData}
+                        onUpdate={(data: Partial<StudentFormData>) => setStudentData(prev => ({ ...prev, ...data }))}
                     />
                 )}
 
@@ -145,6 +217,7 @@ export default function MultiStepForm() {
                         onSubmit={handleParentSubmit}
                         onBack={handleBack}
                         initialData={parentData}
+                        onUpdate={(data: Partial<ParentFormData>) => setParentData(prev => ({ ...prev, ...data }))}
                     />
                 )}
 
@@ -152,7 +225,8 @@ export default function MultiStepForm() {
                     <AdditionalDataForm
                         onSubmit={handleAdditionalDataSubmit}
                         onBack={handleBack}
-                        initialData={additionalData}
+                        initialData={studentData}
+                        onUpdate={(data: Partial<StudentFormData>) => setStudentData(prev => ({ ...prev, ...data }))}
                     />
                 )}
 

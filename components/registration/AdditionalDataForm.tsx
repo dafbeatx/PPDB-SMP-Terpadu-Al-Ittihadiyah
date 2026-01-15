@@ -9,15 +9,21 @@ import { StudentFormData } from '@/lib/validations/student'
 
 interface AdditionalDataFormProps {
     onSubmit: (data: Partial<StudentFormData>) => void
+    onUpdate?: (data: Partial<StudentFormData>) => void
     onBack: () => void
-    initialData: Partial<StudentFormData> | null
+    initialData: StudentFormData
 }
 
-export default function AdditionalDataForm({ onSubmit, onBack, initialData }: AdditionalDataFormProps) {
+export default function AdditionalDataForm({ onSubmit, onUpdate, onBack, initialData }: AdditionalDataFormProps) {
     const [formData, setFormData] = useState({
-        prestasi: initialData?.prestasi || '',
-        hafalan_quran: initialData?.hafalan_quran || '',
+        prestasi: initialData.prestasi || '',
+        hafalan_quran: initialData.hafalan_quran || '',
     })
+
+    const handleChange = (field: 'prestasi' | 'hafalan_quran', value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }))
+        onUpdate?.({ [field]: value })
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -40,7 +46,7 @@ export default function AdditionalDataForm({ onSubmit, onBack, initialData }: Ad
                     </label>
                     <textarea
                         value={formData.prestasi}
-                        onChange={(e) => setFormData({ ...formData, prestasi: e.target.value })}
+                        onChange={(e) => handleChange('prestasi', e.target.value)}
                         rows={4}
                         className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none text-base text-gray-900 placeholder:text-gray-400 transition-colors resize-none"
                         placeholder="Contoh: Juara 1 Lomba Adzan Tingkat Kecamatan, Harapan 2 Pencak Silat, dll."
@@ -54,7 +60,7 @@ export default function AdditionalDataForm({ onSubmit, onBack, initialData }: Ad
                     label="Hafalan Al-Qur'an"
                     type="text"
                     value={formData.hafalan_quran}
-                    onChange={(e) => setFormData({ ...formData, hafalan_quran: e.target.value })}
+                    onChange={(e) => handleChange('hafalan_quran', e.target.value)}
                     placeholder="Contoh: Juz 30, 2 Juz, dll."
                     helperText="Isi jika calon siswa memiliki hafalan Al-Qur'an"
                 />

@@ -8,37 +8,19 @@ import { studentSchema, type StudentFormData } from '@/lib/validations/student'
 
 interface StudentFormProps {
     onSubmit: (data: StudentFormData) => void
-    initialData: StudentFormData | null
+    onUpdate?: (data: Partial<StudentFormData>) => void
+    initialData: StudentFormData
 }
 
-export default function StudentForm({ onSubmit, initialData }: StudentFormProps) {
-    const [formData, setFormData] = useState<StudentFormData>(
-        initialData || {
-            full_name: '',
-            nik_siswa: '',
-            nisn: '',
-            birth_place: '',
-            birth_date: '',
-            gender: 'Laki-laki',
-            agama: '',
-            anak_ke: 1,
-            address: '',
-            desa: '',
-            kecamatan: '',
-            kabupaten: '',
-            previous_school: '',
-            tahun_lulus: '',
-            phone_number: '',
-            prestasi: '',
-            hafalan_quran: '',
-            tinggal_dengan: '',
-        }
-    )
+export default function StudentForm({ onSubmit, onUpdate, initialData }: StudentFormProps) {
+    const [formData, setFormData] = useState<StudentFormData>(initialData)
     const [errors, setErrors] = useState<Record<string, string>>({})
 
     const handleChange = (field: keyof StudentFormData, value: string | number) => {
-        setFormData({ ...formData, [field]: value })
-        // Clear error when user starts typing
+        const newData = { ...formData, [field]: value }
+        setFormData(newData)
+        onUpdate?.({ [field]: value })
+
         if (errors[field]) {
             setErrors({ ...errors, [field]: '' })
         }

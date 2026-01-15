@@ -9,8 +9,9 @@ import { parentSchema, type ParentFormData } from '@/lib/validations/parent'
 
 interface ParentFormProps {
     onSubmit: (data: ParentFormData) => void
+    onUpdate?: (data: Partial<ParentFormData>) => void
     onBack: () => void
-    initialData: ParentFormData | null
+    initialData: ParentFormData
 }
 
 const commonOccupations = [
@@ -39,25 +40,15 @@ const educationLevels = [
     'Tidak Sekolah',
 ]
 
-export default function ParentForm({ onSubmit, onBack, initialData }: ParentFormProps) {
-    const [formData, setFormData] = useState<ParentFormData>(
-        initialData || {
-            father_name: '',
-            father_occupation: '',
-            pendidikan_ayah: '',
-            mother_name: '',
-            mother_occupation: '',
-            pendidikan_ibu: '',
-            phone_number: '',
-            address: '',
-            nama_wali: '',
-            hubungan_wali: '',
-        }
-    )
+export default function ParentForm({ onSubmit, onUpdate, onBack, initialData }: ParentFormProps) {
+    const [formData, setFormData] = useState<ParentFormData>(initialData)
     const [errors, setErrors] = useState<Record<string, string>>({})
 
     const handleChange = (field: keyof ParentFormData, value: string) => {
-        setFormData({ ...formData, [field]: value })
+        const newData = { ...formData, [field]: value }
+        setFormData(newData)
+        onUpdate?.({ [field]: value })
+
         if (errors[field]) {
             setErrors({ ...errors, [field]: '' })
         }
