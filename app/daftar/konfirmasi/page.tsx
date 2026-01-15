@@ -20,23 +20,68 @@ export default async function KonfirmasiPage({
 
     const supabase = await createClient()
 
+    console.log('Fetching registration data for ID:', id)
+
     // Fetch registration data
     const { data: registration, error } = await supabase
         .from('registrations')
         .select(`
-      *,
-      students (*),
-      parents (*)
-    `)
+            *,
+            students (*),
+            parents (*)
+        `)
         .eq('id', id)
-        .single()
+        .maybeSingle()
 
-    if (error || !registration) {
-        redirect('/daftar')
+    console.log('Query result:', {
+        id,
+        hasRegistration: !!registration,
+        hasStudent: !!registration?.students,
+        hasParent: !!registration?.parents,
+        studentCount: Array.isArray(registration?.students) ? registration.students.length : 'not an array',
+        parentCount: Array.isArray(registration?.parents) ? registration.parents.length : 'not an array'
+    })
+
+    if (error) {
+        console.error('Supabase fetch error:', error)
+        // Check if it's a 404-like error or something else
+        return (
+            <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+                <Card className="max-w-md w-full p-8 text-center">
+                    <h2 className="text-2xl font-bold text-red-600 mb-4">Terjadi Kesalahan</h2>
+                    <p className="text-gray-600 mb-6">
+                        Gagal mengambil data pendaftaran. Silakan coba muat ulang halaman.
+                    </p>
+                    <Link href="/daftar">
+                        <Button className="w-full">Kembali ke Pendaftaran</Button>
+                    </Link>
+                </Card>
+            </main>
+        )
     }
 
-    const student = (registration as any).students
-    const parent = (registration as any).parents
+    if (!registration) {
+        console.warn('No registration found for ID:', id)
+        return (
+            <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+                <Card className="max-w-md w-full p-8 text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Tidak Ditemukan</h2>
+                    <p className="text-gray-600 mb-6">
+                        Maaf, data pendaftaran dengan ID tersebut tidak dapat ditemukan.
+                    </p>
+                    <Link href="/daftar">
+                        <Button className="w-full">Kembali ke Pendaftaran</Button>
+                    </Link>
+                </Card>
+            </main>
+        )
+    }
+
+    // Supabase .select('*, students(*)') returns an array for joins, even if it's 1-to-1 logically
+    const student = Array.isArray(registration.students) ? registration.students[0] : registration.students
+    const parent = Array.isArray(registration.parents) ? registration.parents[0] : registration.parents
+
+    const fallback = <span className="text-gray-400 italic">Data tidak tersedia</span>
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 py-12">
@@ -55,88 +100,93 @@ export default async function KonfirmasiPage({
                     </p>
                 </div>
 
-                <Card className="p-8 md:p-12 mb-6">
-                    <div className="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-8 text-center">
-                        <p className="text-sm text-gray-600 mb-2">Nomor Pendaftaran Anda:</p>
-                        <p className="text-3xl md:text-4xl font-bold text-green-700">
-                            {registration.registration_number}
+                <Card className="p-8 md:p-12 mb-6 shadow-xl border-t-4 border-t-green-600">
+                    <div className="bg-green-50 border-2 border-green-500 rounded-2xl p-6 mb-8 text-center">
+                        <p className="text-sm text-gray-600 mb-2 font-medium uppercase tracking-wider">Nomor Pendaftaran Anda:</p>
+                        <p className="text-3xl md:text-5xl font-extrabold text-green-700 tracking-tight">
+                            {registration.registration_number || fallback}
                         </p>
-                        <p className="text-sm text-gray-600 mt-3">
+                        <p className="text-sm text-gray-700 mt-4 bg-white/50 inline-block px-4 py-1 rounded-full border border-green-200">
                             Harap simpan nomor ini untuk keperluan verifikasi
                         </p>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-10">
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">Ringkasan Data Pendaftaran</h2>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="h-8 w-1 bg-green-600 rounded-full"></div>
+                                <h2 className="text-2xl font-bold text-gray-900">Ringkasan Data Pendaftaran</h2>
+                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-3 text-lg">Data Siswa</h3>
-                                    <dl className="space-y-2 text-sm">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                                    <h3 className="font-bold text-green-800 mb-4 text-lg border-b border-green-100 pb-2">Data Siswa</h3>
+                                    <dl className="space-y-4 text-sm">
                                         <div>
-                                            <dt className="text-gray-600">Nama Lengkap:</dt>
-                                            <dd className="font-medium text-gray-900">{student.full_name}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Nama Lengkap:</dt>
+                                            <dd className="font-semibold text-gray-900 text-base">{student?.full_name || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">NISN:</dt>
-                                            <dd className="font-medium text-gray-900">{student.nisn}</dd>
+                                            <dt className="text-gray-500 mb-0.5">NISN:</dt>
+                                            <dd className="font-mono text-gray-900 bg-white px-2 py-0.5 rounded border border-gray-200 inline-block">{student?.nisn || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Tempat, Tanggal Lahir:</dt>
+                                            <dt className="text-gray-500 mb-0.5">Tempat, Tanggal Lahir:</dt>
                                             <dd className="font-medium text-gray-900">
-                                                {student.birth_place}, {formatDate(student.birth_date)}
+                                                {student ? `${student.birth_place}, ${formatDate(student.birth_date)}` : fallback}
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Jenis Kelamin:</dt>
-                                            <dd className="font-medium text-gray-900">{student.gender}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Jenis Kelamin:</dt>
+                                            <dd className="font-medium text-gray-900">{student?.gender || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Asal Sekolah:</dt>
-                                            <dd className="font-medium text-gray-900">{student.previous_school}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Asal Sekolah:</dt>
+                                            <dd className="font-medium text-gray-900">{student?.previous_school || fallback}</dd>
                                         </div>
                                     </dl>
                                 </div>
 
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-3 text-lg">Data Orang Tua</h3>
-                                    <dl className="space-y-2 text-sm">
+                                <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                                    <h3 className="font-bold text-green-800 mb-4 text-lg border-b border-green-100 pb-2">Data Orang Tua</h3>
+                                    <dl className="space-y-4 text-sm">
                                         <div>
-                                            <dt className="text-gray-600">Nama Ayah:</dt>
-                                            <dd className="font-medium text-gray-900">{parent.father_name}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Nama Ayah / Ibu:</dt>
+                                            <dd className="font-semibold text-gray-900 text-base">
+                                                {parent?.father_name || fallback} / {parent?.mother_name || fallback}
+                                            </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Nama Ibu:</dt>
-                                            <dd className="font-medium text-gray-900">{parent.mother_name}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Pekerjaan Ayah:</dt>
+                                            <dd className="font-medium text-gray-900">{parent?.father_occupation || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Pekerjaan Ayah:</dt>
-                                            <dd className="font-medium text-gray-900">{parent.father_occupation}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Pekerjaan Ibu:</dt>
+                                            <dd className="font-medium text-gray-900">{parent?.mother_occupation || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-600">Pekerjaan Ibu:</dt>
-                                            <dd className="font-medium text-gray-900">{parent.mother_occupation}</dd>
-                                        </div>
-                                        <div>
-                                            <dt className="text-gray-600">Nomor HP:</dt>
-                                            <dd className="font-medium text-gray-900">{parent.phone_number}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Nomor HP:</dt>
+                                            <dd className="font-bold text-green-700 text-base">{parent?.phone_number || fallback}</dd>
                                         </div>
                                     </dl>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="pt-6 border-t">
-                            <h3 className="font-semibold text-gray-700 mb-3 text-lg">Status Pendaftaran</h3>
-                            <div className="flex items-center gap-3">
-                                <span className={`px-4 py-2 rounded-full text-sm font-semibold ${registration.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+                        <div className="pt-8 border-t border-gray-100">
+                            <h3 className="font-bold text-gray-900 mb-4 text-lg">Status Pendaftaran</h3>
+                            <div className="flex flex-wrap items-center gap-4">
+                                <span className={`px-6 py-2.5 rounded-full text-sm font-bold shadow-sm ${registration.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                        registration.status === 'verified' ? 'bg-blue-100 text-blue-800' :
+                                            registration.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                                                'bg-red-100 text-red-800'
                                     }`}>
-                                    {getStatusLabel(registration.status)}
+                                    {getStatusLabel(registration.status || 'pending')}
                                 </span>
-                                <span className="text-gray-600 text-sm">
+                                <div className="text-gray-500 text-sm flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full"></span>
                                     Tanggal Daftar: {formatDate(registration.created_at)}
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
