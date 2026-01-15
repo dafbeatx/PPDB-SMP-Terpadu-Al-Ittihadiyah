@@ -5,26 +5,36 @@ import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
 import Card from '@/components/ui/Card'
 
+const getAvatarByName = (name: string) => {
+    const n = name.toLowerCase()
+    const isFemale = n.includes('ibu') || n.includes('hj.') || n.includes('siti') || n.includes('aisyah') || n.includes('nur') || n.includes('putri') || n.includes('nabila') || n.includes('sdri')
+    const isMale = n.includes('bpk') || n.includes('h.') || n.includes('ahmad') || n.includes('muhammad') || n.includes('rahmat') || n.includes('sdr')
+
+    // Stable "random" choice based on name length
+    const variant = name.length % 2 === 0 ? '1' : '2'
+
+    if (isFemale) return `/avatars/female-${variant}.svg`
+    if (isMale) return `/avatars/male-${variant}.svg`
+    return '/avatars/neutral.svg'
+}
+
 const TESTIMONIALS = [
     {
         name: "Hj. Siti Aminah",
         role: "Orang Tua Siswa",
         content: "Alhamdulillah, anak saya mengalami perkembangan pesat baik secara akademik maupun karakter sejak sekolah di sini. Lingkungan yang Islami sangat membantu.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Siti",
         rating: 5
     },
     {
         name: "Bpk. Rahmat Hidayat",
         role: "Orang Tua Alumni",
         content: "Kurikulum terpadu di SMP Al-Ittihadiyah sangat luar biasa. Anak saya lulus dengan hafalan Al-Quran yang baik dan bisa bersaing di SMA favorit.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahmat",
         rating: 5
     },
     {
         name: "Nabila Putri",
         role: "Alumni 2023",
         content: "Banyak kenangan indah di sini. Guru-gurunya sangat sabar dan suportif. Fasilitasnya juga lengkap untuk mendukung hobi basket saya.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nabila",
         rating: 5
     }
 ]
@@ -63,9 +73,9 @@ export default function Testimoni() {
                                 </p>
 
                                 <div className="flex items-center gap-4">
-                                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-green-100 group-hover:border-green-500 transition-colors">
+                                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-green-100 group-hover:border-green-500 transition-colors bg-gray-50">
                                         <Image
-                                            src={t.avatar}
+                                            src={getAvatarByName(t.name)}
                                             alt={t.name}
                                             fill
                                             className="object-cover"
