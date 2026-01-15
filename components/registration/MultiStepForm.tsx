@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import StudentForm from './StudentForm'
 import ParentForm from './ParentForm'
+import AdditionalDataForm from './AdditionalDataForm'
 import DocumentUpload from './DocumentUpload'
 import StepIndicator from './StepIndicator'
 import type { StudentFormData } from '@/lib/validations/student'
@@ -17,6 +18,7 @@ export interface DocumentData {
 export default function MultiStepForm() {
     const [currentStep, setCurrentStep] = useState(1)
     const [studentData, setStudentData] = useState<StudentFormData | null>(null)
+    const [additionalData, setAdditionalData] = useState<Partial<StudentFormData> | null>(null)
     const [parentData, setParentData] = useState<ParentFormData | null>(null)
     const [documents, setDocuments] = useState<DocumentData>({})
     const [registrationId, setRegistrationId] = useState<string | null>(null)
@@ -25,19 +27,16 @@ export default function MultiStepForm() {
 
     // Auto scroll to top on step change
     useEffect(() => {
-        // Blur active element to close mobile keyboard if open
         if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
             document.activeElement.blur()
         }
 
-        // Small timeout to ensure DOM is updated and keyboard is closing
         const timer = setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
 
-            // Focus the title for accessibility
             const title = containerRef.current?.querySelector('h2')
             if (title instanceof HTMLElement) {
-                title.tabIndex = -1 // Make it focusable via script
+                title.tabIndex = -1
                 title.focus({ preventScroll: true })
             }
         }, 100)
@@ -45,7 +44,7 @@ export default function MultiStepForm() {
         return () => clearTimeout(timer)
     }, [currentStep])
 
-    const totalSteps = 3
+    const totalSteps = 4
 
     const handleStudentSubmit = (data: StudentFormData) => {
         setStudentData(data)
@@ -57,6 +56,11 @@ export default function MultiStepForm() {
         setCurrentStep(3)
     }
 
+    const handleAdditionalDataSubmit = (data: Partial<StudentFormData>) => {
+        setAdditionalData(data)
+        setCurrentStep(4)
+    }
+
     const handleDocumentSubmit = async (docs: DocumentData) => {
         setDocuments(docs)
         setIsSubmitting(true)
@@ -64,13 +68,18 @@ export default function MultiStepForm() {
         try {
             let currentRegId = registrationId
 
-            // First, create the registration if it doesn't exist yet
             if (!currentRegId) {
+                // Merge student data and additional data
+                const fullStudentData = {
+                    ...studentData,
+                    ...additionalData
+                }
+
                 const registrationResponse = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        student: studentData,
+                        student: fullStudentData,
                         parent: parentData,
                     }),
                 })
@@ -85,7 +94,6 @@ export default function MultiStepForm() {
                 setRegistrationId(currentRegId)
             }
 
-            // Upload documents
             for (const [type, file] of Object.entries(docs)) {
                 if (file) {
                     const formData = new FormData()
@@ -105,7 +113,6 @@ export default function MultiStepForm() {
                 }
             }
 
-            // Redirect to confirmation page
             window.location.href = `/daftar/konfirmasi?id=${currentRegId}`
         } catch (error: any) {
             console.error('Error submitting registration:', error)
@@ -142,6 +149,14 @@ export default function MultiStepForm() {
                 )}
 
                 {currentStep === 3 && (
+                    <AdditionalDataForm
+                        onSubmit={handleAdditionalDataSubmit}
+                        onBack={handleBack}
+                        initialData={additionalData}
+                    />
+                )}
+
+                {currentStep === 4 && (
                     <DocumentUpload
                         onSubmit={handleDocumentSubmit}
                         onBack={handleBack}

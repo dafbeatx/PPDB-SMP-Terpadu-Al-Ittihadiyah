@@ -11,11 +11,9 @@ interface Registration {
     registration_number: string
     status: string
     created_at: string
-    students?: {
-        full_name: string
-        nisn: string
-        phone_number: string
-    }[]
+    students?: any[]
+    parents?: any[]
+    documents?: any[]
     // Flattened fields for UI
     full_name?: string
     nisn?: string
@@ -27,6 +25,8 @@ export default function PendaftarPage() {
     const [searchTerm, setSearchTerm] = useState('')
     const [filterStatus, setFilterStatus] = useState<string>('all')
     const [updatingId, setUpdatingId] = useState<string | null>(null)
+    const [selectedReg, setSelectedReg] = useState<Registration | null>(null)
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         fetchRegistrations()
@@ -39,17 +39,14 @@ export default function PendaftarPage() {
                 .from('registrations')
                 .select(`
                     *,
-                    students (
-                        full_name,
-                        nisn,
-                        phone_number
-                    )
+                    students (*),
+                    parents (*),
+                    documents (*)
                 `)
                 .order('created_at', { ascending: false })
 
             if (error) throw error
 
-            // Flatten data for easier use
             const flattened = (data || []).map(reg => ({
                 ...reg,
                 full_name: reg.students?.[0]?.full_name || 'Tanpa Nama',
@@ -62,6 +59,11 @@ export default function PendaftarPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleViewDetails = (reg: Registration) => {
+        setSelectedReg(reg)
+        setShowModal(true)
     }
 
     const handleExport = async () => {
@@ -327,6 +329,14 @@ export default function PendaftarPage() {
                                         <td className="py-4 px-4 lg:px-6">
                                             <div className="flex gap-1 lg:gap-2">
                                                 <button
+                                                    onClick={() => handleViewDetails(reg)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200"
+                                                    title="Lihat Detail"
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                </button>
+                                                <div className="w-px h-6 bg-gray-200 mx-1" />
+                                                <button
                                                     onClick={() => handleStatusUpdate(reg.id, 'accepted')}
                                                     className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200 disabled:opacity-50"
                                                     title="Terima Pendaftaran"
@@ -360,12 +370,145 @@ export default function PendaftarPage() {
                 </div>
             </Card>
 
-            {/* Results Count */}
-            {filteredRegistrations.length > 0 && (
-                <p className="text-sm text-gray-600 text-center">
-                    Menampilkan {filteredRegistrations.length} dari {registrations.length} pendaftar
-                </p>
+            {/* Detail Modal */}
+            {showModal && selectedReg && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+                        <div className="p-6 border-b flex items-center justify-between bg-gray-50">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">Detail Pendaftar</h2>
+                                <p className="text-sm font-mono text-green-700 font-medium">{selectedReg.registration_number}</p>
+                            </div>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                            {/* Data Siswa */}
+                            <section>
+                                <h3 className="text-lg font-bold text-green-800 border-b border-green-100 pb-2 mb-4">Data Siswa</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <DetailField label="Nama Lengkap" value={selectedReg.students?.[0]?.full_name} />
+                                    <DetailField label="NIK" value={selectedReg.students?.[0]?.nik_siswa} />
+                                    <DetailField label="NISN" value={selectedReg.students?.[0]?.nisn} />
+                                    <DetailField label="Tempat Lahir" value={selectedReg.students?.[0]?.birth_place} />
+                                    <DetailField label="Tanggal Lahir" value={selectedReg.students?.[0]?.birth_date} />
+                                    <DetailField label="Jenis Kelamin" value={selectedReg.students?.[0]?.gender} />
+                                    <DetailField label="Agama" value={selectedReg.students?.[0]?.agama} />
+                                    <DetailField label="Anak Ke" value={selectedReg.students?.[0]?.anak_ke} />
+                                    <DetailField label="Tinggal Dengan" value={selectedReg.students?.[0]?.tinggal_dengan} />
+                                    <DetailField label="Asal Sekolah" value={selectedReg.students?.[0]?.previous_school} />
+                                    <DetailField label="Tahun Lulus" value={selectedReg.students?.[0]?.tahun_lulus} />
+                                    <DetailField label="Nomor HP" value={selectedReg.students?.[0]?.phone_number} />
+                                    <div className="md:col-span-3">
+                                        <DetailField
+                                            label="Alamat"
+                                            value={`${selectedReg.students?.[0]?.address || '-'}${selectedReg.students?.[0]?.desa ? ` (Desa: ${selectedReg.students[0].desa})` : ''}${selectedReg.students?.[0]?.kecamatan ? ` (Kec: ${selectedReg.students[0].kecamatan})` : ''}${selectedReg.students?.[0]?.kabupaten ? ` (Kab: ${selectedReg.students[0].kabupaten})` : ''}`}
+                                        />
+                                    </div>
+                                    <div className="md:col-span-3">
+                                        <DetailField label="Prestasi" value={selectedReg.students?.[0]?.prestasi} />
+                                    </div>
+                                    <div className="md:col-span-3">
+                                        <DetailField label="Hafalan Quran" value={selectedReg.students?.[0]?.hafalan_quran} />
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Data Orang Tua */}
+                            <section>
+                                <h3 className="text-lg font-bold text-green-800 border-b border-green-100 pb-2 mb-4">Data Orang Tua / Wali</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <DetailField label="Nama Ayah" value={selectedReg.parents?.[0]?.father_name} />
+                                    <DetailField label="Pendidikan Ayah" value={selectedReg.parents?.[0]?.pendidikan_ayah} />
+                                    <DetailField label="Pekerjaan Ayah" value={selectedReg.parents?.[0]?.father_occupation} />
+                                    <div className="hidden md:block"></div>
+                                    <DetailField label="Nama Ibu" value={selectedReg.parents?.[0]?.mother_name} />
+                                    <DetailField label="Pendidikan Ibu" value={selectedReg.parents?.[0]?.pendidikan_ibu} />
+                                    <DetailField label="Pekerjaan Ibu" value={selectedReg.parents?.[0]?.mother_occupation} />
+                                    <div className="hidden md:block"></div>
+                                    <DetailField label="Nomor HP Orang Tua" value={selectedReg.parents?.[0]?.phone_number} />
+                                    <DetailField label="Nama Wali" value={selectedReg.parents?.[0]?.nama_wali} />
+                                    <DetailField label="Hubungan Wali" value={selectedReg.parents?.[0]?.hubungan_wali} />
+                                    <div className="md:col-span-2">
+                                        <DetailField label="Alamat Orang Tua" value={selectedReg.parents?.[0]?.address || 'Sama dengan alamat siswa'} />
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Dokumen */}
+                            <section>
+                                <h3 className="text-lg font-bold text-green-800 border-b border-green-100 pb-2 mb-4">Dokumen</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    {['ktp', 'kartu_keluarga', 'ijazah'].map((type) => {
+                                        const doc = selectedReg.documents?.find(d => d.document_type === type)
+                                        return (
+                                            <div key={type} className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                                                <p className="text-xs font-bold text-gray-500 uppercase mb-2">
+                                                    {type.replace('_', ' ')}
+                                                </p>
+                                                {doc ? (
+                                                    <a
+                                                        href={doc.file_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-sm text-green-600 font-medium hover:underline flex items-center gap-2"
+                                                    >
+                                                        <Eye className="w-4 h-4" /> Buka File
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-sm text-gray-400 italic">Belum diupload</span>
+                                                )}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </section>
+                        </div>
+
+                        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowModal(false)}>
+                                Tutup
+                            </Button>
+                            {selectedReg.status === 'pending' && (
+                                <>
+                                    <Button
+                                        variant="outline"
+                                        className="text-red-600 border-red-200 hover:bg-red-50"
+                                        onClick={() => {
+                                            handleStatusUpdate(selectedReg.id, 'rejected')
+                                            setShowModal(false)
+                                        }}
+                                    >
+                                        Tolak
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            handleStatusUpdate(selectedReg.id, 'accepted')
+                                            setShowModal(false)
+                                        }}
+                                    >
+                                        Terima Pendaftaran
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                    </Card>
+                </div>
             )}
+        </div>
+    )
+}
+
+function DetailField({ label, value }: { label: string, value: any }) {
+    return (
+        <div>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+            <p className="text-gray-900 font-medium">{value || '-'}</p>
         </div>
     )
 }

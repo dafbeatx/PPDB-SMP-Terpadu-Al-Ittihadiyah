@@ -58,21 +58,35 @@ export async function GET(request: Request) {
 
                 // Student data
                 'Nama Lengkap': student.full_name || '-',
+                'NIK': student.nik_siswa || '-',
                 'NISN': student.nisn || '-',
                 'Tempat Lahir': student.birth_place || '-',
                 'Tanggal Lahir': student.birth_date ? new Date(student.birth_date).toLocaleDateString('id-ID') : '-',
                 'Jenis Kelamin': student.gender || '-',
+                'Agama': student.agama || '-',
+                'Anak Ke': student.anak_ke || '-',
                 'Alamat': student.address || '-',
+                'Desa': student.desa || '-',
+                'Kecamatan': student.kecamatan || '-',
+                'Kabupaten': student.kabupaten || '-',
                 'Asal Sekolah': student.previous_school || '-',
+                'Tahun Lulus': student.tahun_lulus || '-',
                 'Telepon Siswa': student.phone_number || '-',
+                'Tinggal Dengan': student.tinggal_dengan || '-',
+                'Prestasi': student.prestasi || '-',
+                'Hafalan Quran': student.hafalan_quran || '-',
 
                 // Parent data
                 'Nama Ayah': parent.father_name || '-',
+                'Pendidikan Ayah': parent.pendidikan_ayah || '-',
                 'Pekerjaan Ayah': parent.father_occupation || '-',
                 'Nama Ibu': parent.mother_name || '-',
+                'Pendidikan Ibu': parent.pendidikan_ibu || '-',
                 'Pekerjaan Ibu': parent.mother_occupation || '-',
                 'Telepon Orang Tua': parent.phone_number || '-',
                 'Alamat Orang Tua': parent.address || '-',
+                'Nama Wali': parent.nama_wali || '-',
+                'Hubungan Wali': parent.hubungan_wali || '-',
 
                 // Documents
                 'File KTP': ktpDoc?.file_path || '-',

@@ -6,7 +6,8 @@ interface StepIndicatorProps {
 const steps = [
     { number: 1, label: 'Data Siswa' },
     { number: 2, label: 'Data Orang Tua' },
-    { number: 3, label: 'Upload Dokumen' },
+    { number: 3, label: 'Data Tambahan' },
+    { number: 4, label: 'Upload Dokumen' },
 ]
 
 export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {

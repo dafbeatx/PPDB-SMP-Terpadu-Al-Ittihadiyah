@@ -121,14 +121,20 @@ export default async function KonfirmasiPage({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
                                     <h3 className="font-bold text-green-800 mb-4 text-lg border-b border-green-100 pb-2">Data Siswa</h3>
-                                    <dl className="space-y-4 text-sm">
+                                    <dl className="grid grid-cols-1 gap-y-4 text-sm">
                                         <div>
                                             <dt className="text-gray-500 mb-0.5">Nama Lengkap:</dt>
                                             <dd className="font-semibold text-gray-900 text-base">{student?.full_name || fallback}</dd>
                                         </div>
-                                        <div>
-                                            <dt className="text-gray-500 mb-0.5">NISN:</dt>
-                                            <dd className="font-mono text-gray-900 bg-white px-2 py-0.5 rounded border border-gray-200 inline-block">{student?.nisn || fallback}</dd>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">NIK:</dt>
+                                                <dd className="font-medium text-gray-900">{student?.nik_siswa || fallback}</dd>
+                                            </div>
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">NISN:</dt>
+                                                <dd className="font-medium text-gray-900">{student?.nisn || fallback}</dd>
+                                            </div>
                                         </div>
                                         <div>
                                             <dt className="text-gray-500 mb-0.5">Tempat, Tanggal Lahir:</dt>
@@ -136,24 +142,53 @@ export default async function KonfirmasiPage({
                                                 {student ? `${student.birth_place}, ${formatDate(student.birth_date)}` : fallback}
                                             </dd>
                                         </div>
-                                        <div>
-                                            <dt className="text-gray-500 mb-0.5">Jenis Kelamin:</dt>
-                                            <dd className="font-medium text-gray-900">{student?.gender || fallback}</dd>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">Jenis Kelamin / Agama:</dt>
+                                                <dd className="font-medium text-gray-900">{student?.gender || fallback} / {student?.agama || fallback}</dd>
+                                            </div>
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">Anak Ke / Tinggal Dengan:</dt>
+                                                <dd className="font-medium text-gray-900">{student?.anak_ke || fallback} / {student?.tinggal_dengan || fallback}</dd>
+                                            </div>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-500 mb-0.5">Asal Sekolah:</dt>
-                                            <dd className="font-medium text-gray-900">{student?.previous_school || fallback}</dd>
+                                            <dt className="text-gray-500 mb-0.5">Asal Sekolah / Tahun Lulus:</dt>
+                                            <dd className="font-medium text-gray-900">{student?.previous_school || fallback} ({student?.tahun_lulus || fallback})</dd>
                                         </div>
+                                        <div>
+                                            <dt className="text-gray-500 mb-0.5">Alamat Lengkap:</dt>
+                                            <dd className="font-medium text-gray-900">
+                                                {student?.address || fallback}<br />
+                                                <span className="text-xs text-gray-500">
+                                                    {student?.desa ? `Desa: ${student.desa}, ` : ''}
+                                                    {student?.kecamatan ? `Kec: ${student.kecamatan}, ` : ''}
+                                                    {student?.kabupaten ? `Kota: ${student.kabupaten}` : ''}
+                                                </span>
+                                            </dd>
+                                        </div>
+                                        {student?.prestasi && (
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">Prestasi:</dt>
+                                                <dd className="font-medium text-gray-900 text-xs italic">{student.prestasi}</dd>
+                                            </div>
+                                        )}
+                                        {student?.hafalan_quran && (
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">Hafalan Quran:</dt>
+                                                <dd className="font-medium text-gray-900">{student.hafalan_quran}</dd>
+                                            </div>
+                                        )}
                                     </dl>
                                 </div>
 
                                 <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
                                     <h3 className="font-bold text-green-800 mb-4 text-lg border-b border-green-100 pb-2">Data Orang Tua</h3>
-                                    <dl className="space-y-4 text-sm">
+                                    <dl className="grid grid-cols-1 gap-y-4 text-sm">
                                         <div>
-                                            <dt className="text-gray-500 mb-0.5">Nama Ayah / Ibu:</dt>
+                                            <dt className="text-gray-500 mb-0.5">Nama Ayah (Pendidikan):</dt>
                                             <dd className="font-semibold text-gray-900 text-base">
-                                                {parent?.father_name || fallback} / {parent?.mother_name || fallback}
+                                                {parent?.father_name || fallback} ({parent?.pendidikan_ayah || '-'})
                                             </dd>
                                         </div>
                                         <div>
@@ -161,12 +196,28 @@ export default async function KonfirmasiPage({
                                             <dd className="font-medium text-gray-900">{parent?.father_occupation || fallback}</dd>
                                         </div>
                                         <div>
+                                            <dt className="text-gray-500 mb-0.5">Nama Ibu (Pendidikan):</dt>
+                                            <dd className="font-semibold text-gray-900 text-base">
+                                                {parent?.mother_name || fallback} ({parent?.pendidikan_ibu || '-'})
+                                            </dd>
+                                        </div>
+                                        <div>
                                             <dt className="text-gray-500 mb-0.5">Pekerjaan Ibu:</dt>
                                             <dd className="font-medium text-gray-900">{parent?.mother_occupation || fallback}</dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-500 mb-0.5">Nomor HP:</dt>
+                                            <dt className="text-gray-500 mb-0.5">Nomor HP / WhatsApp:</dt>
                                             <dd className="font-bold text-green-700 text-base">{parent?.phone_number || fallback}</dd>
+                                        </div>
+                                        {parent?.nama_wali && (
+                                            <div>
+                                                <dt className="text-gray-500 mb-0.5">Wali ({parent.hubungan_wali || 'Hubungan'}):</dt>
+                                                <dd className="font-medium text-gray-900">{parent.nama_wali}</dd>
+                                            </div>
+                                        )}
+                                        <div>
+                                            <dt className="text-gray-500 mb-0.5">Alamat Orang Tua:</dt>
+                                            <dd className="font-medium text-gray-900">{parent?.address || 'Sama dengan alamat siswa'}</dd>
                                         </div>
                                     </dl>
                                 </div>
@@ -177,9 +228,9 @@ export default async function KonfirmasiPage({
                             <h3 className="font-bold text-gray-900 mb-4 text-lg">Status Pendaftaran</h3>
                             <div className="flex flex-wrap items-center gap-4">
                                 <span className={`px-6 py-2.5 rounded-full text-sm font-bold shadow-sm ${registration.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                        registration.status === 'verified' ? 'bg-blue-100 text-blue-800' :
-                                            registration.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                                                'bg-red-100 text-red-800'
+                                    registration.status === 'verified' ? 'bg-blue-100 text-blue-800' :
+                                        registration.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                                            'bg-red-100 text-red-800'
                                     }`}>
                                     {getStatusLabel(registration.status || 'pending')}
                                 </span>
