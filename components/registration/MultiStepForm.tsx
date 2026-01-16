@@ -49,6 +49,7 @@ export default function MultiStepForm() {
         mother_occupation: '',
         pendidikan_ibu: '',
         phone_number: '',
+        email: '',
         address: '',
         nama_wali: '',
         hubungan_wali: '',

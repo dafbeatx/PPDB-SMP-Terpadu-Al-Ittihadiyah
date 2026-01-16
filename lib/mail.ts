@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const FROM_EMAIL = 'PPDB Al-Ittihadiyah <onboarding@resend.dev>' // Default Resend domain or verified domain
 
 export async function sendConfirmationEmail(
@@ -8,6 +8,10 @@ export async function sendConfirmationEmail(
     studentName: string,
     registrationNumber: string
 ) {
+    if (!resend) {
+        console.warn('Resend API key is missing. Skipping confirmation email.')
+        return { success: false, error: 'Resend not initialized' }
+    }
     try {
         const { data, error } = await resend.emails.send({
             from: FROM_EMAIL,
@@ -59,6 +63,10 @@ export async function sendStatusUpdateEmail(
     registrationNumber: string,
     status: 'accepted' | 'rejected'
 ) {
+    if (!resend) {
+        console.warn('Resend API key is missing. Skipping status update email.')
+        return { success: false, error: 'Resend not initialized' }
+    }
     const isAccepted = status === 'accepted'
     const statusText = isAccepted ? 'DITERIMA' : 'DITOLAK'
     const color = isAccepted ? '#15803d' : '#dc2626'
