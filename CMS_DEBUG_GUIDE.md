@@ -68,10 +68,10 @@ Akan muncul log seperti ini:
 **Solusi:**
 ```sql
 -- Cek di Supabase SQL Editor
-SELECT * FROM admin_users WHERE email = 'dafbeatx@gmail.com';
+SELECT * FROM admin_users WHERE email = 'your-email@example.com';
 
 -- Jika kosong, tambahkan:
-INSERT INTO admin_users (email) VALUES ('dafbeatx@gmail.com');
+INSERT INTO admin_users (email) VALUES ('your-email@example.com');
 ```
 
 ### Issue 3: Error 500 Internal Server Error

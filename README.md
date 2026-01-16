@@ -7,7 +7,8 @@ Sistem Penerimaan Peserta Didik Baru (PPDB) Online untuk SMP Terpadu Al-Ittihadi
 ### 1. Setup Supabase
 
 1. Buat project di [Supabase](https://supabase.com)
-2. Copy file ENV_SETUP.md dan isi kredensial Supabase Anda
+2. Copy file `.env.example` menjadi `.env.local` dan isi kredensial Supabase Anda.
+   **PENTING: JANGAN PERNAH meng-commit file .env.local atau kredensial asli ke repository.**
 3. Jalankan SQL schema di Supabase SQL Editor:
    - Buka `supabase/migrations/001_initial_schema.sql`
    - Copy seluruh isinya
@@ -35,12 +36,16 @@ npm install
 
 ### 3. Environment Variables
 
-Buat file `.env.local` di root folder:
+Gunakan `.env.example` sebagai template. Salin isinya ke file baru bernama `.env.local` di root folder:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
+
+**Catatan Keamanan:**
+- File `.env.local` sudah masuk dalam `.gitignore` agar tidak ter-commit ke GitHub.
+- Pastikan Anda hanya mengisi nilai asli di `.env.local` (lokal) atau Vercel Dashboard (production).
 
 ### 4. Run Development Server
 

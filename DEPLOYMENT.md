@@ -164,6 +164,7 @@ Sebelum go-live:
 
 - [x] Environment variables set di Vercel (tidak di code)
 - [x] `.env.local` TIDAK di-commit ke Git
+- [x] File `.env.example` digunakan sebagai template (TANPA kredensial asli)
 - [x] Supabase RLS policies active
 - [x] Storage bucket private (bukan public)
 - [ ] Ganti password Supabase database
