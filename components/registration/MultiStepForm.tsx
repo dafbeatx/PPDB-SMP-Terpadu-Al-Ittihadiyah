@@ -116,18 +116,49 @@ export default function MultiStepForm() {
 
     const totalSteps = 4
 
-    const handleStudentSubmit = (data: StudentFormData) => {
+    const saveToDb = async (student?: StudentFormData, parent?: ParentFormData) => {
+        setIsSaving(true)
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student: student || studentData,
+                    parent: parent || parentData,
+                    registrationId: registrationId,
+                }),
+            })
+
+            if (!response.ok) throw new Error('Gagal autosave ke database')
+
+            const result = await response.json()
+            if (result.registrationId && !registrationId) {
+                setRegistrationId(result.registrationId)
+            }
+        } catch (error) {
+            console.error('Autosave error:', error)
+        } finally {
+            // Keep the "Tersimpan" state visible for a moment
+            setTimeout(() => setIsSaving(false), 500)
+        }
+    }
+
+    const handleStudentSubmit = async (data: StudentFormData) => {
         setStudentData(data)
+        await saveToDb(data, undefined)
         setCurrentStep(2)
     }
 
-    const handleParentSubmit = (data: ParentFormData) => {
+    const handleParentSubmit = async (data: ParentFormData) => {
         setParentData(data)
+        await saveToDb(undefined, data)
         setCurrentStep(3)
     }
 
-    const handleAdditionalDataSubmit = (data: Partial<StudentFormData>) => {
-        setStudentData(prev => ({ ...prev, ...data }))
+    const handleAdditionalDataSubmit = async (data: Partial<StudentFormData>) => {
+        const updatedStudent = { ...studentData, ...data }
+        setStudentData(updatedStudent)
+        await saveToDb(updatedStudent, undefined)
         setCurrentStep(4)
     }
 
@@ -209,14 +240,10 @@ export default function MultiStepForm() {
             </div>
 
             <div className="mt-8 relative">
-                {/* Autosave Indicator - Contextual positioning below stepper/above form */}
-                <div className="flex justify-center sm:justify-end mb-4 px-1">
+                {/* Autosave Indicator - Moved to avoid overlap with stepper */}
+                <div className="flex justify-end mb-2 px-1 h-6">
                     <AutosaveIndicator isSaving={isSaving} />
                 </div>
-                {/* Secondary subtle indicator below step titles would be inside form components, 
-                    but we can also place it here if we want it global. 
-                    The user asked for 'ATAU di bawah judul step'. 
-                    Let's keep it in the header for now as it's cleaner. */}
 
                 {currentStep === 1 && (
                     <StudentForm

@@ -88,7 +88,7 @@ export default function FloatingFAQBot() {
     if (isInputFocused && typeof window !== 'undefined' && window.innerWidth < 768) return null
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 md:gap-4 sm:bottom-6 bottom-20">
+        <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 md:gap-4 sm:bottom-6 bottom-20">
             {/* Scroll to Top Button */}
             <AnimatePresence>
                 {showScrollTop && (

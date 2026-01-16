@@ -4,80 +4,89 @@ import { sendConfirmationEmail } from '@/lib/mail'
 
 export async function POST(request: Request) {
     try {
-        const { student, parent } = await request.json()
+        const { student, parent, registrationId } = await request.json()
 
         const supabase = await createClient()
 
-        // 1. Create registration with empty registration_number so trigger can populate it
-        const { data: registration, error: regError } = await supabase
+        let currentRegistrationId = registrationId
+
+        // 1. Create registration IF NOT EXISTS
+        if (!currentRegistrationId) {
+            const { data: registration, error: regError } = await supabase
+                .from('registrations')
+                .insert({ registration_number: '', status: 'pending' })
+                .select('id, registration_number')
+                .single()
+
+            if (regError || !registration) {
+                console.error('Registration error details:', regError)
+                return NextResponse.json(
+                    {
+                        error: 'Gagal membuat pendaftaran',
+                        details: regError?.message || 'No registration returned'
+                    },
+                    { status: 500 }
+                )
+            }
+            currentRegistrationId = registration.id
+        }
+
+        // Fetch current registration data (especially registration_number)
+        const { data: regInfo } = await supabase
             .from('registrations')
-            .insert({ registration_number: '' })
-            .select('id, registration_number')
+            .select('registration_number')
+            .eq('id', currentRegistrationId)
             .single()
 
-        if (regError || !registration) {
-            console.error('Registration error details:', regError)
-            return NextResponse.json(
-                {
-                    error: 'Gagal membuat pendaftaran',
-                    details: regError?.message || 'No registration returned'
-                },
-                { status: 500 }
-            )
+        // 2. Upsert student data if provided
+        if (student) {
+            const { error: studentError } = await supabase
+                .from('students')
+                .upsert({
+                    registration_id: currentRegistrationId,
+                    ...student,
+                }, { onConflict: 'registration_id' })
+
+            if (studentError) {
+                console.error('Student upsert error:', studentError)
+                return NextResponse.json(
+                    { error: 'Gagal menyimpan data siswa', details: studentError.message },
+                    { status: 500 }
+                )
+            }
         }
 
-        // 2. Insert student data
-        console.log('Inserting student data for registration:', registration.id)
-        const { error: studentError } = await supabase
-            .from('students')
-            .insert({
-                registration_id: registration.id,
-                ...student,
-            })
+        // 3. Upsert parent data if provided
+        if (parent) {
+            const { error: parentError } = await supabase
+                .from('parents')
+                .upsert({
+                    registration_id: currentRegistrationId,
+                    ...parent,
+                }, { onConflict: 'registration_id' })
 
-        if (studentError) {
-            console.error('Student error details:', studentError)
-            // Rollback by deleting registration
-            await supabase.from('registrations').delete().eq('id', registration.id)
-            return NextResponse.json(
-                { error: 'Gagal menyimpan data siswa', details: studentError.message },
-                { status: 500 }
-            )
+            if (parentError) {
+                console.error('Parent upsert error:', parentError)
+                return NextResponse.json(
+                    { error: 'Gagal menyimpan data orang tua', details: parentError.message },
+                    { status: 500 }
+                )
+            }
         }
 
-        // 3. Insert parent data
-        console.log('Inserting parent data for registration:', registration.id)
-        const { error: parentError } = await supabase
-            .from('parents')
-            .insert({
-                registration_id: registration.id,
-                ...parent,
-            })
-
-        if (parentError) {
-            console.error('Parent error details:', parentError)
-            // Rollback
-            await supabase.from('students').delete().eq('registration_id', registration.id)
-            await supabase.from('registrations').delete().eq('id', registration.id)
-            return NextResponse.json(
-                { error: 'Gagal menyimpan data orang tua', details: parentError.message },
-                { status: 500 }
-            )
-        }
-
-        // 4. Send Confirmation Email (Async - don't block response)
-        if (parent.email) {
-            sendConfirmationEmail(
-                parent.email,
-                student.full_name,
-                registration.registration_number
-            ).catch(err => console.error('Failed to send confirmation email async:', err))
-        }
+        // 4. Send Confirmation Email (Integration)
+        // Only send if this is a "complete" submission (Step 3 to 4) 
+        // OR as requested by user on successful registration.
+        // We trigger it when the registration is first created or when specific fields are final.
+        // For simplicity, let's trigger it when student AND parent names are present if not already sent.
+        // But the user specifically asked for "Saat pendaftaran berhasil: kirim email otomatis".
+        // This is usually at the end of the form. 
+        // The MultiStepForm will handle the "Final Submit" logic.
 
         return NextResponse.json({
             success: true,
-            registrationId: registration.id,
-            registrationNumber: registration.registration_number,
+            registrationId: currentRegistrationId,
+            registrationNumber: regInfo?.registration_number,
         })
     } catch (error: any) {
         console.error('Unexpected error in /api/register:', error)

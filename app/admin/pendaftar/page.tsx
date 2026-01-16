@@ -342,17 +342,30 @@ export default function PendaftarPage() {
                                             {reg.nisn}
                                         </td>
                                         <td className="py-4 px-4 lg:px-6">
-                                            {reg.documents && reg.documents.length > 0 ? (
-                                                <button
-                                                    onClick={() => handleDownloadZip(reg.id, reg.full_name || "Siswa", reg.registration_number)}
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 text-xs font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                                                >
-                                                    <Download className="w-3.5 h-3.5" />
-                                                    ZIP Dokumen
-                                                </button>
-                                            ) : (
-                                                <span className="text-xs text-gray-400 italic">Belum upload</span>
-                                            )}
+                                            <div className="flex flex-col gap-2">
+                                                {reg.documents && reg.documents.length > 0 ? (
+                                                    <button
+                                                        onClick={() => handleDownloadZip(reg.id, reg.full_name || "Siswa", reg.registration_number)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm w-full"
+                                                    >
+                                                        <Download className="w-3 h-3" />
+                                                        ZIP Dokumen
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-xs text-gray-400 italic">Belum upload</span>
+                                                )}
+                                                {reg.parents?.[0]?.phone_number && (
+                                                    <a
+                                                        href={`https://wa.me/${reg.parents[0].phone_number.replace(/^0/, '62')}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-100 text-[10px] font-bold hover:bg-green-600 hover:text-white transition-all shadow-sm w-full"
+                                                    >
+                                                        <Users className="w-3 h-3" />
+                                                        WhatsApp Ortu
+                                                    </a>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="py-4 px-4 lg:px-6">
                                             {getStatusBadge(reg.status)}
@@ -470,6 +483,19 @@ export default function PendaftarPage() {
                                     <DetailField label="Pekerjaan Ibu" value={selectedReg.parents?.[0]?.mother_occupation} />
                                     <div className="hidden md:block"></div>
                                     <DetailField label="Nomor HP Orang Tua" value={selectedReg.parents?.[0]?.phone_number} />
+                                    {selectedReg.parents?.[0]?.phone_number && (
+                                        <div className="pt-2">
+                                            <a
+                                                href={`https://wa.me/${selectedReg.parents[0].phone_number.replace(/^0/, '62')}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 px-3 py-2 rounded-lg hover:bg-green-600 hover:text-white transition-all"
+                                            >
+                                                <Users className="w-4 h-4" />
+                                                Chat WhatsApp Orang Tua
+                                            </a>
+                                        </div>
+                                    )}
                                     <DetailField label="Nama Wali" value={selectedReg.parents?.[0]?.nama_wali} />
                                     <DetailField label="Hubungan Wali" value={selectedReg.parents?.[0]?.hubungan_wali} />
                                     <div className="md:col-span-2">
@@ -505,10 +531,20 @@ export default function PendaftarPage() {
                             </section>
                         </div>
 
-                        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3">
+                        <div className="p-6 border-t bg-gray-50 flex flex-wrap justify-end gap-3">
                             <Button variant="outline" onClick={() => setShowModal(false)}>
                                 Tutup
                             </Button>
+                            {selectedReg.documents && selectedReg.documents.length > 0 && (
+                                <Button
+                                    variant="outline"
+                                    className="bg-blue-50 text-blue-700 border-blue-200"
+                                    onClick={() => handleDownloadZip(selectedReg.id, selectedReg.full_name || "Siswa", selectedReg.registration_number)}
+                                >
+                                    <Download className="w-4 h-4 mr-2" />
+                                    Download ZIP Dokumen
+                                </Button>
+                            )}
                             {selectedReg.status === 'pending' && (
                                 <>
                                     <Button

@@ -4,29 +4,16 @@ Sistem Penerimaan Peserta Didik Baru (PPDB) Online untuk SMP Terpadu Al-Ittihadi
 
 ## 🚀 Quick Start
 
-### 1. Setup Supabase
-
-1. Buat project di [Supabase](https://supabase.com)
-2. Copy file `.env.example` menjadi `.env.local` dan isi kredensial Supabase Anda.
-   **PENTING: JANGAN PERNAH meng-commit file .env.local atau kredensial asli ke repository.**
-3. Jalankan SQL schema di Supabase SQL Editor:
-   - Buka `supabase/migrations/001_initial_schema.sql`
-   - Copy seluruh isinya
-   - Paste dan jalankan di Supabase SQL Editor
-
-4. Buat Storage Bucket:
-   ```sql
-   -- Jalankan ini di Supabase SQL Editor
-   INSERT INTO storage.buckets (id, name, public) 
-   VALUES ('documents', 'documents', false);
-   ```
-
-5. Buat Admin User (opsional untuk testing):
-   ```sql
-   -- Buat user admin di Supabase Auth terlebih dahulu via dashboard
-   -- Kemudian insert email admin ke tabel admin_users
-   INSERT INTO admin_users (email) VALUES ('admin@example.com');
-   ```
+1.  **Environment Variables**:
+    Lihat [SETUP_GUIDE.md](file:///home/senku/.gemini/antigravity/scratch/ppdb-smp-al-ittihadiyah/SETUP_GUIDE.md) untuk panduan konfigurasi lengkap (Supabase, Resend, dll).
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
 
 ### 2. Install Dependencies
 
