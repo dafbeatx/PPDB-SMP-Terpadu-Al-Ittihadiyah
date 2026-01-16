@@ -80,6 +80,8 @@ git push -u origin main
    |-----|-------|
    | `NEXT_PUBLIC_SUPABASE_URL` | (Paste URL dari Supabase) |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | (Paste anon key dari Supabase) |
+   | `RESEND_API_KEY` | (Paste API key dari Resend) |
+   | `NEXT_PUBLIC_SITE_URL` | `https://your-project.vercel.app` |
    
    Click "Add" untuk setiap variable
 

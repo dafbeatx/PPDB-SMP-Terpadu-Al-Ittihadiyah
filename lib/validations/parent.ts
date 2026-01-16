@@ -9,6 +9,7 @@ export const parentSchema = z.object({
     pendidikan_ibu: z.string().min(1, 'Pendidikan ibu harus dipilih'),
     phone_number: z.string()
         .regex(/^08\d{8,11}$/, 'Nomor HP harus format Indonesia (08xx) dan 10-13 digit'),
+    email: z.string().email('Format email tidak valid'),
     address: z.string().optional(),
     nama_wali: z.string().optional().or(z.literal('')),
     hubungan_wali: z.string().optional().or(z.literal('')),

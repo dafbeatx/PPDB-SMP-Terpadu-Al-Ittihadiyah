@@ -231,6 +231,17 @@ export default function ParentForm({ onSubmit, onUpdate, onBack, initialData }: 
                             required
                         />
 
+                        <Input
+                            label="Email Aktif"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => handleChange('email', e.target.value)}
+                            error={errors.email}
+                            helperText="Email pendaftar untuk menerima notifikasi status"
+                            required
+                        />
+
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
                                 Alamat Orang Tua

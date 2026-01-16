@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendConfirmationEmail } from '@/lib/mail'
 
 export async function POST(request: Request) {
     try {
@@ -7,7 +8,6 @@ export async function POST(request: Request) {
 
         const supabase = await createClient()
 
-        // Start a transaction-like operation
         // 1. Create registration with empty registration_number so trigger can populate it
         const { data: registration, error: regError } = await supabase
             .from('registrations')
@@ -63,6 +63,15 @@ export async function POST(request: Request) {
                 { error: 'Gagal menyimpan data orang tua', details: parentError.message },
                 { status: 500 }
             )
+        }
+
+        // 4. Send Confirmation Email (Async - don't block response)
+        if (parent.email) {
+            sendConfirmationEmail(
+                parent.email,
+                student.full_name,
+                registration.registration_number
+            ).catch(err => console.error('Failed to send confirmation email async:', err))
         }
 
         return NextResponse.json({
