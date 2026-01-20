@@ -21,14 +21,9 @@ export default function Navbar() {
     const pathname = usePathname()
     const isDaftarPage = pathname === '/daftar'
     const [activeSection, setActiveSection] = useState('hero')
-    const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20)
-        }
-
         const observerOptions = {
             root: null,
             rootMargin: '-50% 0px -50% 0px',
@@ -47,22 +42,14 @@ export default function Navbar() {
         const sections = document.querySelectorAll('section[id]')
         sections.forEach((section) => observer.observe(section))
 
-        window.addEventListener('scroll', handleScroll)
+
         return () => {
-            window.removeEventListener('scroll', handleScroll)
             sections.forEach((section) => observer.unobserve(section))
         }
     }, [])
 
     return (
-        <nav
-            className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-[padding,background-color,box-shadow,height] duration-300",
-                isScrolled
-                    ? "bg-white shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] py-1.5"
-                    : "bg-white shadow-none py-3"
-            )}
-        >
+        <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-2">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
