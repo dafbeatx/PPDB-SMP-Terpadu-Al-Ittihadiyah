@@ -1,4 +1,5 @@
 import Hero from '@/components/landing/Hero'
+import PrincipalWelcome from '@/components/landing/PrincipalWelcome'
 import Profile from '@/components/landing/Profile'
 import VisiMisi from '@/components/landing/VisiMisi'
 import Keunggulan from '@/components/landing/Keunggulan'
@@ -9,6 +10,7 @@ export default function HomePage() {
   return (
     <main>
       <Hero />
+      <PrincipalWelcome />
       <Profile />
       <VisiMisi />
       <Keunggulan />
