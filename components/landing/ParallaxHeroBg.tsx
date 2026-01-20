@@ -10,12 +10,10 @@ export default function ParallaxHeroBg() {
         <motion.div
             style={{ y }}
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 z-0"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         >
             <div
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+                style={{ backgroundImage: "url('/hero-bg.webp')" }}
             />
         </motion.div>
     )

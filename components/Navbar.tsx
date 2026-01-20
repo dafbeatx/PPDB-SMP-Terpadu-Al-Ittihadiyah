@@ -60,7 +60,7 @@ export default function Navbar() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-none shadow-none",
                 isScrolled
-                    ? "bg-green-700/95 backdrop-blur-md py-1.5 shadow-lg"
+                    ? "bg-green-700 py-1.5 shadow-lg"
                     : "bg-transparent py-4"
             )}
         >
@@ -70,7 +70,7 @@ export default function Navbar() {
                     <Link href="/" className="flex items-center gap-2 md:gap-3 group">
                         <div className="relative overflow-hidden rounded-lg">
                             <Image
-                                src="/logo.png"
+                                src="/logo.webp"
                                 alt="Logo SMP Al-Ittihadiyah"
                                 width={48}
                                 height={48}

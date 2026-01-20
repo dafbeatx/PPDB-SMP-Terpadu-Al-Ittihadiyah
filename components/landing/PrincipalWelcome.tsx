@@ -19,6 +19,7 @@ export default function PrincipalWelcome() {
                                             src="/kepala-sekolah.webp"
                                             alt="Kepala Sekolah SMP Terpadu Al-Ittihadiyah"
                                             fill
+                                            sizes="(max-width: 768px) 240px, 280px"
                                             className="object-cover"
                                             priority
                                         />

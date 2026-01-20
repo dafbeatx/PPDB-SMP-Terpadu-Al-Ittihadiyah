@@ -27,9 +27,9 @@ export default async function Hero() {
                 <ScrollReveal direction="up" distance={40}>
                     <div className="max-w-4xl mx-auto text-center">
                         <div className="flex justify-center mb-4 md:mb-8">
-                            <div className="bg-white/10 backdrop-blur-md p-3 md:p-4 rounded-3xl border border-white/20 hover:scale-110 transition-transform duration-300 shadow-2xl">
+                            <div className="bg-white/20 p-3 md:p-4 rounded-3xl border border-white/20 hover:scale-110 transition-transform duration-300 shadow-xl">
                                 <Image
-                                    src="/logo.png"
+                                    src="/logo.webp"
                                     alt="Logo SMP Terpadu Al-Ittihadiyah"
                                     width={80}
                                     height={80}
@@ -67,7 +67,7 @@ export default async function Hero() {
                         </div>
 
                         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                            <ScrollReveal direction="up" delay={0.2} distance={20} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:bg-white/20 transition-colors">
+                            <ScrollReveal direction="up" delay={0.2} distance={20} className="bg-white/10 rounded-xl p-6 border border-white/10 hover:bg-white/20 transition-colors">
                                 <div className="text-3xl font-bold mb-2">
                                     <Counter value={statExperience} suffix="+" />
                                 </div>
