@@ -24,9 +24,13 @@ export default function PrincipalWelcome() {
                                             priority
                                         />
                                     </div>
-                                    <div className="p-4 text-center">
-                                        <h3 className="text-lg font-bold text-gray-900 leading-tight">Farhan Sopian Sahid, S.Pd.I</h3>
-                                        <p className="text-sm text-green-700 font-semibold mt-1">Kepala Sekolah</p>
+                                    <div className="px-4 py-5 text-center flex flex-col justify-center min-h-[90px]">
+                                        <h3 className="text-base md:text-lg font-bold text-gray-900 leading-snug">
+                                            Farhan Sopian Sahid, S.Pd.I
+                                        </h3>
+                                        <p className="text-sm text-green-700 font-semibold mt-1.5 uppercase tracking-wide">
+                                            Kepala Sekolah
+                                        </p>
                                     </div>
                                 </Card>
                             </div>
