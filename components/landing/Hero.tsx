@@ -20,7 +20,7 @@ export default async function Hero() {
     const statAccreditation = content['hero.stat_accreditation'] || 'A'
 
     return (
-        <section id="hero" className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white pt-12 pb-20 md:py-20 overflow-hidden">
+        <section id="hero" className="relative bg-gradient-to-br from-green-600 via-green-700 to-blue-800 text-white pt-28 pb-20 md:pt-32 md:pb-24 overflow-hidden">
             <ParallaxHeroBg />
 
             <div className="container mx-auto px-4 relative z-10">
