@@ -16,7 +16,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'PPDB SMP Terpadu Al-Ittihadiyah - Pendaftaran Siswa Baru',
-  description: 'Pendaftaran Peserta Didik Baru (PPDB) SMP Terpadu Al-Ittihadiyah Tahun Ajaran 2026/2027. Daftar sekarang dengan mudah dan cepat!',
+  description: 'Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah. Daftar online dengan mudah dan cepat.',
   keywords: 'PPDB, Pendaftaran, SMP Al-Ittihadiyah, Sekolah Islam, Pendidikan',
   icons: {
     icon: "/favicon.ico",
@@ -24,13 +24,13 @@ export const metadata: Metadata = {
     apple: "/favicon-180x180.png"
   },
   openGraph: {
-    title: "PPDB SMP Terpadu Al-Ittihadiyah 2026/2027",
-    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor",
-    url: 'https://ppdb-smp-al-ittihadiyah.vercel.app',
+    title: "PPDB SMP Terpadu Al-Ittihadiyah Tahun Ajaran 2026/2027",
+    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah. Daftar online dengan mudah dan cepat.",
+    url: 'https://ppdb-smp-terpadu-al-ittihadiyah.vercel.app',
     siteName: 'PPDB SMP Terpadu Al-Ittihadiyah',
     images: [
       {
-        url: "/og-ppdb-hero.png",
+        url: "https://ppdb-smp-terpadu-al-ittihadiyah.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "PPDB SMP Terpadu Al-Ittihadiyah"
@@ -41,9 +41,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PPDB SMP Terpadu Al-Ittihadiyah 2026/2027",
-    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah Bogor",
-    images: ["/og-ppdb-hero.png"]
+    title: "PPDB SMP Terpadu Al-Ittihadiyah Tahun Ajaran 2026/2027",
+    description: "Pendaftaran Peserta Didik Baru SMP Terpadu Al-Ittihadiyah. Daftar online dengan mudah dan cepat.",
+    images: ["https://ppdb-smp-terpadu-al-ittihadiyah.vercel.app/og-image.png"]
   }
 }
 
